@@ -15,7 +15,6 @@ out/
 out-br/
 export/
 build/
-host/
 xtest/
 
 # Linux / Buildroot temporary configs
