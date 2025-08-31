@@ -1,0 +1,344 @@
+https://www.youtube.com/watch?v=ZfG8p9O5_EY
+
+Talk by qualcomm engineer sumit garg.
+
+
+https://claude.ai/chat/53622fb3-7bd7-40df-9730-3997a33ef929
+
+
+
+
+In the rpi3/optee , the binaries of the host file that are going to be executed are stored at /usr/bin
+
+And the .ta files are stored at /lib/optee_armtz
+
+Whereas on the host machine side where build and all are there ,
+The ta and host files are generally present in the optee_examples folder.
+But after making changes to the files over here like modifying the main.c file of host and ta.c file of ta , and then doing the buildroot from /build folder ,
+
+Changes will be reflected in the created binary files which are present in the out-br folder.
+
+.ta is in   optee_rpi3/out-br/target/lib/optee_armtz
+And client binary file in:  /optee_rpi3/out-br/target/usr/bin.
+
+And for timing tests , a benchmark flag can be turned on which is already present in the optee os.
+
+
+
+
+https://claude.ai/chat/0e669511-d943-43a9-ab13-5c263d302313
+
+
+
+Overall this is what is happening when secure hash is  implemented
+
+optee_example_secure_hash my_file.txt.
+Host (main.c) starts in the Normal World.
+Host calls TEEC_InitializeContext and TEEC_OpenSession.
+The TEE OS loads the TA (secure_hash_ta.c) into the Secure World. The TA's TA_CreateEntryPoint and TA_OpenSessionEntryPoint functions are executed.
+Host reads my_file.txt from the disk into a memory buffer.
+Host prepares an TEEC_Operation struct, pointing to the file buffer as input and an empty buffer as output.
+Host calls TEEC_InvokeCommand(CMD_HASH_FILE).
+WORLD SWITCH! An SMC is executed. The CPU transitions from Normal World to Secure World.
+TA's TA_InvokeCommandEntryPoint function is executed.
+The switch statement sees CMD_HASH_FILE and calls compute_secure_hash.
+TA's compute_secure_hash function directly accesses the host's file buffer via shared memory and calculates the SHA-256 hash.
+TA writes the resulting hash into the host's output buffer.
+TA returns TEE_SUCCESS.
+WORLD SWITCH! The CPU transitions back from Secure World to Normal World. The TEEC_InvokeCommand function in the host finally returns.
+Host now has the hash in its output buffer and prints it to the screen.
+
+
+
+
+I am only transferring the .ta  of the ta file and then the binary file of the host.
+After doing make buildroot.
+
+
+I was trying to give a file size of more than 5MB but it is not getting computed.
+The hash compute is failing.
+
+
+
+In the given location , the shared memory size of the rpi3 is defined as 4MB.
+/home/rajesh/optee_rpi3/optee_os/core/arch/arm/plat-rpi3/platform_config.h
+
+
+
+
+#ifndef PLATFORM_CONFIG_H
+#define PLATFORM_CONFIG_H
+
+#include <mm/generic_ram_layout.h>
+
+/* Make stacks aligned to data cache line length */
+#define STACK_ALIGNMENT        64
+
+#ifdef ARM64
+#ifdef CFG_WITH_PAGER
+#error "Pager not supported for ARM64"
+#endif
+#endif /* ARM64 */
+
+/* 16550 UART */
+#define CONSOLE_UART_BASE    0x3f215040 /* UART0 */
+#define CONSOLE_BAUDRATE    115200
+#define CONSOLE_UART_CLK_IN_HZ    19200000
+
+/*
+ * RPi memory map
+ *
+ * No secure memory on RPi...
+ *
+ *
+ *    Available to Linux <above>
+ *  0x0a00_0000
+ *    TA RAM: 16 MiB                          |
+ *  0x0842_0000                               | TZDRAM
+ *    TEE RAM: 4 MiB (TEE_RAM_VA_SIZE)          |
+ *  0x0840_0000 [ARM Trusted Firmware       ] -
+ *  0x0840_0000 [TZDRAM_BASE, BL32_LOAD_ADDR] -
+ *    Shared memory: 4 MiB                    |
+ *  0x0800_0000                               | DRAM0
+ *    Available to Linux                      |
+ *  0x0000_0000 [DRAM0_BASE]                  -
+ *
+ */
+
+#define DRAM0_BASE        0x00000000
+#define DRAM0_SIZE        0x40000000
+
+#endif /* PLATFORM_CONFIG_H */
+
+
+
+Normal World (Linux)
+───────────────────────────────────────────────
+[ Non-secure DDR for Linux kernel + user space ]
+[ Shared Memory (4 MiB, reserved)             ]
+───────────────────────────────────────────────
+Secure World (TZDRAM)
+───────────────────────────────────────────────
+[ TEE RAM (4 MiB)   : OP-TEE Core             ]
+[ TA RAM (16 MiB)   : Trusted Applications    ]
+───────────────────────────────────────────────
+
+
+
+
+
+When the same file was run for multiple times , caching was happening so I/O read time for that file drastically reduced.
+
+
+
+## 1. Performance Measurement and Analysis
+We have successfully implemented and validated a detailed performance monitoring system for your TEE application.
+Correct Measurements: Your application now correctly measures Total Latency, CPU Time, File I/O Time, Context Switches (Voluntary and Involuntary), and Peak Memory Usage in the Normal World.
+TEE Internals: Inside the TA, you are accurately measuring the Total TEE Time (time spent in the Secure World) and the fine-grained Hash Computation Time.
+CPU-Bound Operation: We confirmed that the secure hashing operation is CPU-bound, with CPU utilization consistently reaching nearly 100%, which is expected for a cryptographic task.
+I/O vs. Compute Separation: You successfully identified that your application has two distinct phases: a slower I/O phase (reading the file) and a CPU-intensive computation phase (the secure call).
+
+## 2. Memory Architecture and Limitations
+We have explored the memory layout of your Raspberry Pi OP-TEE system and identified a key bottleneck.
+Fixed Memory Map: The system RAM is partitioned at compile time between the Normal World (Linux) and the Secure World (OP-TEE).
+Secure Memory Regions: The Secure World is further divided into TEE RAM (for the OP-TEE OS), TA RAM (for your secure applications), and Shared Memory.
+The 4MB Bottleneck: You discovered that the Shared Memory region, used for communication, is fixed at 4MB. This is the reason you cannot process files larger than this size, even if you increase the limit in your application code.
+Confirmation: You successfully located the platform_config.h file that defines this memory layout, confirming the 4MB limit in the source code.
+
+
+# 4. System Behavior Analysis (Context & World Switches)
+We performed a deep dive into the interaction between your application, the Linux kernel, and the Secure World.
+World Switch vs. Context Switch: You learned that a World Switch (the hardware-level SMC call) causes a Context Switch (the software-level OS scheduler action).
+Voluntary vs. Involuntary Switches: You learned to distinguish between switches your app initiates by waiting (voluntary) and switches the OS forces upon it (involuntary).
+/home/rajesh/optee_rpi3/linux/drivers/tee/optee/call.c
+Driver Behavior Discovery: By analyzing the call.c kernel driver and your performance reports (Voluntary Switches: 0), you uncovered a key implementation detail: for your workload, the TEE driver uses a "busy-wait" loop instead of putting the application to sleep. This explains the 0 voluntary switches and near-100% CPU utilization during the wait.
+
+
+
+
+Input
+Total Time (µs)
+CPU Time (µs)
+CPU Utilization (%)
+Context Switches (vol/invol)
+3.2 MB
+245,000
+241,000
+98.4
+0 / 0 (single process, idle system)
+3.2 MB (with background load)
+294,585
+284,154
+96.5
+0 / 13
+3.2 MB (more background load)
+357,110
+284,662
+79.7
+0 / 29
+3.2 MB (high load)
+570,532
+285,185
+50.0
+0 / 34
+
+
+
+Observations:
+CPU Time is stable (~285,000 µs for 3.2 MB) across runs.
+
+
+Indicates that the actual work done by the host + Secure World is consistent.
+
+
+CPU time measures only the time the process actually had the CPU.
+
+
+Total/Wall Time varies depending on system load.
+
+
+Higher background load → more involuntary context switches → longer total time.
+
+
+Involuntary context switches increase as background processes run.
+
+
+Voluntary switches remain 0 → host process never yields CPU itself.
+
+
+CPU Utilization decreases as more processes compete for CPU, despite same actual compute work.
+
+
+
+3. Key Insights
+3.1 World Switch vs Context Switch
+World switch (Normal → Secure World via SMC)
+
+
+Lightweight: saves minimal CPU state (registers, PC, SPSR)
+
+
+Happens each TEEC_InvokeCommand()
+
+
+Minimal overhead (few microseconds on Cortex-A53)
+
+
+Linux Context Switch
+
+
+Happens when Linux scheduler preempts a process
+
+
+Involuntary switches increase with background load
+
+
+CPU time accounts only for the time process actually runs → independent of preemption
+
+
+Conclusion:
+The Secure World call itself does not trigger context switches. Only Linux preemption or multitasking causes context switches.
+
+3.2 Secure World Execution
+TA execution is CPU-bound and deterministic.
+
+
+Wall-clock time varies with scheduling and background load.
+
+
+CPU time remains constant across runs → TA computation is stable.
+
+
+Secure World calls are not truly atomic at the system level, but deterministic in terms of compute work.
+
+
+
+3.3 Overhead Observations
+The overhead of entering/exiting Secure World (SMC) is negligible compared to TA computation.
+
+
+Context switch overhead only appears when multiple processes compete for CPU.
+
+
+If benchmark runs alone on CPU → effective overhead due to Linux scheduler is almost zero.
+
+
+
+
+
+File
+Hash Size
+TEE Total Time
+Hash Compute
+Overhead (TEE Total - Hash)
+Lab One.pdf
+33 KB
+7 ms
+3 ms
+4 ms
+1.5 MB
+1,488,896 B
+117 ms
+113 ms
+4 ms
+3.2 MB
+3,188,896 B
+245 ms
+241 ms
+4 ms
+
+
+The hash compute time scales with file size, as expected.
+
+
+The difference between Total TEE time and actual hash compute time is nearly constant (~4 ms).
+
+
+
+
+Processing file: test.txt
+-----D/TA:  TA_InvokeCommandEntryPoint:328 Secure Hash TA: Computing hash
+----------------I/TA: Computing hash for 998 bytes
+----------------I/TA: Hash computed successfully: 998 bytes -> 32 bytes (took 0 μs)
+---
+I/TA: Timing details - Total TEE time: 4000 μs, Hash compute: 0 μs, REE time delta: 5000 μs
+Hash comD/TA:  TA_InvokeCommandEntryPoint:332 Secure Hash TA: Getting performance stats
+puted successfulI/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+ly (32 bytes)
+Hash: 6dae3e18a01D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+50be9079D/TC:? 0 tee_ta_close_session:529 Destroy session
+f8ca2be4I/TA: Secure Hash TA session closed
+af4a8e3c798556d6D/TA:  TA_DestroyEntryPoint:276 Secure Hash TA: Destroying entry point
+d2f76bae3f2cd3e7D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+ae47b
+
+=== PERFORMANCE ANALYSIS REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 1969 μs
+Context Switches: 0
+Voluntary Context Switches: 0
+InVoluntary Context Switches: 0
+Total Time: 28959 μs
+CPU Time: 28962 μs (100.01%)
+Memory Peak: 1332 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 28959.00 μs
+Average IPC latency: 28959.00 μs
+CPU Utilization: 100.01%
+
+=== END REPORT ===
+
+
+
+These stats confirm that the context switches are not happening because of world change as we can see even in this the 4ms of the secure world setup remained consistent.
+So the context switches are purely because of the scheduling by the os. And preemption of the processes.
+Because in the above we can see 0 context switches , when the file size is too small.
