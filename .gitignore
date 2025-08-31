@@ -1,0 +1,41 @@
+# Build outputs
+*.o
+*.a
+*.so
+*.d
+*.elf
+*.bin
+*.img
+*.map
+*.hex
+*.log
+
+# OP-TEE build dirs
+out/
+out-br/
+export/
+build/
+host/
+xtest/
+
+# Linux / Buildroot temporary configs
+linux/.config
+linux/.*.cmd
+buildroot/.config
+buildroot/.*.cmd
+
+# Toolchains
+toolchains/
+aarch32/
+aarch64/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*~
+
