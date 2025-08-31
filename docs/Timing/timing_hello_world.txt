@@ -1,0 +1,149 @@
+# optee_example_hello_world
+=== OP-TD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA 8aaaf200-2450-11e4-abe2-0002a5d5c51b
+EE Performance MD/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+easuremeD/LD:  ldelf:134 Loading TS 8aaaf200-2450-11e4-abe2-0002a5d5c51b
+nt Started ===
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF 8aaaf200-2450-11e4-abe2-0002a5d5c51b (early TA)
+InitialiD/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+zing TEED/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF 8aaaf200-2450-11e4-abe2-0002a5d5c51b (Secure Storage TA)
+ context...
+TEEC_InitializeContext: 138 microseconds
+Opening session to Hello World TA...
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF 8aaaf200-2450-11e4-abe2-0002a5d5c51b (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (8aaaf200-2450-11e4-abe2-0002a5d5c51b) at 0x40015000
+D/TA:  TA_CreateEntryPoint:68 TA_CreateEntryPoint: Entry at 41525000 us
+D/TA:  TA_CreateEntryPoint:71 TA_CreateEntryPoint: Exit at 41532000 us, Duration: 7000 us
+D/TA:  TA_OpenSessionEntryPoint:106 TA_OpenSession: Entry - Time: 41540000 us, Cycles: 41540000
+D/TA:  TA_OpenSessionEntryPoint:115 has been called
+I/TA: Hello World!
+D/TA:  TA_OpenSessionEntryPoint:133 TA_OpenSession: Exit - Duration: 17000 us, Cycles: 17000
+TEEC_OpeD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #1 - Time: 41566000 us, Cycles: 41566000
+nSession: 186146D/TA:  inc_value:165 has been called
+ microseconds
+I/TA: Got value: 42 from NW
+
+=== Testing TA I/TA: Increase value to: 43
+Performance withD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+ Multiple Calls D/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=1, Total=24000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+===
+Call 1: Invoking TA to incrD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #2 - Time: 41614000 us, Cycles: 41614000
+ement 42
+Call 1D/TA:  inc_value:165 has been called
+: TEEC_InvokeComI/TA: Got value: 43 from NW
+mand: 45961 micrI/TA: Increase value to: 44
+oseconds
+Call 1D/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+: TA incrementedD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=2, Total=48000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+ value to 43
+Call 2: Invoking TD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #3 - Time: 41661000 us, Cycles: 41661000
+A to increment 4D/TA:  inc_value:165 has been called
+3
+Call 2: TEEC_I/TA: Got value: 44 from NW
+InvokeCommand: 4I/TA: Increase value to: 45
+6397 microsecondD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+s
+Call 2: TA inD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=3, Total=72000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+cremented value to 44
+Call 3: ID/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #4 - Time: 41709000 us, Cycles: 41709000
+nvoking TA to inD/TA:  inc_value:165 has been called
+crement 44
+CallI/TA: Got value: 45 from NW
+ 3: TEEC_InvokeCI/TA: Increase value to: 46
+ommand: 46423 miD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+croseconds
+CallD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=4, Total=96000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+ 3: TA incremented value to 45
+D/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #5 - Time: 41757000 us, Cycles: 41757000
+Call 4: InvokingD/TA:  inc_value:165 has been called
+ TA to incrementI/TA: Got value: 46 from NW
+ 45
+Call 4: TEEI/TA: Increase value to: 47
+C_InvokeCommand:D/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+ 46464 microsecoD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=5, Total=120000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+nds
+Call 4: TA incremented valuD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #6 - Time: 41805000 us, Cycles: 41805000
+e to 46
+Call 5:D/TA:  inc_value:165 has been called
+ Invoking TA to I/TA: Got value: 47 from NW
+increment 46
+CaI/TA: Increase value to: 48
+ll 5: TEEC_InvokD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+eCommand: 46563 D/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=6, Total=144000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+microseconds
+Call 5: TAD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #7 - Time: 41852000 us, Cycles: 41852000
+ incremented valD/TA:  inc_value:165 has been called
+ue to 47
+Call 6I/TA: Got value: 48 from NW
+: Invoking TA toI/TA: Increase value to: 49
+ increment 47
+CD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+all 6: TEEC_InvoD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=7, Total=168000 us, Avg=24000 us, Min=24000 us, Max=24000 us
+keCommand: 46554 microseconds
+CD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #8 - Time: 41899000 us, Cycles: 41899000
+all 6: TA incremD/TA:  inc_value:165 has been called
+ented value to 4I/TA: Got value: 49 from NW
+8
+Call 7: InvokI/TA: Increase value to: 50
+ing TA to incremD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 25000 us, Cycles: 25000
+ent 48
+Call 7: D/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=8, Total=193000 us, Avg=24125 us, Min=24000 us, Max=25000 us
+TEEC_InvokeCommand: 4585D/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #9 - Time: 41947000 us, Cycles: 41947000
+1 microseconds
+D/TA:  inc_value:165 has been called
+Call 7: TA increI/TA: Got value: 50 from NW
+mented value to I/TA: Increase value to: 51
+49
+Call 8: InvoD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+king TA to increD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=9, Total=217000 us, Avg=24111 us, Min=24000 us, Max=25000 us
+ment 49
+Call 8: TEEC_InD/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #10 - Time: 41994000 us, Cycles: 41994000
+vokeCommand: 465D/TA:  inc_value:165 has been called
+I/TA: Got value: 51 from NW
+
+Call 8: TA incrI/TA: Increase value to: 52
+emented value toD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+ 50
+Call 9: InvD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=10, Total=241000 us, Avg=24100 us, Min=24000 us, Max=25000 us
+oking TA to increment 50
+Call 9D/TA:  TA_InvokeCommandEntryPoint:212 TA_InvokeCommand: CMD=0, Entry #11 - Time: 42042000 us, Cycles: 42042000
+: TEEC_InvokeComD/TA:  inc_value:165 has been called
+mand: 45844 micrI/TA: Got value: 100 from NW
+oseconds
+Call 9I/TA: Increase value to: 101
+: TA incrementedD/TA:  TA_InvokeCommandEntryPoint:245 TA_InvokeCommand: CMD=0 Exit - Duration: 24000 us, Cycles: 24000
+ value to 51
+CaD/TA:  TA_InvokeCommandEntryPoint:247 TA_Stats: Calls=11, Total=265000 us, Avg=24090 us, Min=24000 us, Max=25000 us
+ll 10: Invoking D/TC:? 0 tee_ta_close_session:510 csess 0x1018aa00 id 1
+TA to inD/TC:? 0 tee_ta_close_session:529 Destroy session
+crement D/TA:  TA_CloseSessionEntryPoint:147 TA_CloseSession: Entry at 42100000 us
+51
+Call 10: TEEI/TA: Goodbye!
+C_InvokeCommand:D/TA:  TA_CloseSessionEntryPoint:153 TA_CloseSession: Exit at 42110000 us, Duration: 10000 us
+ 46048 microsecoD/TA:  TA_DestroyEntryPoint:84 TA_DestroyEntryPoint: Entry at 42120000 us
+nds
+Call 10: TAD/TA:  TA_DestroyEntryPoint:86 has been called
+ incremented valD/TA:  TA_DestroyEntryPoint:89 TA_DestroyEntryPoint: Exit at 42134000 us, Duration: 14000 us
+ue to 52
+
+=== D/TC:? 0 destroy_context:307 Destroy TA ctx (0x1018a9a0)
+Performance Statistics Summary ===
+Total TA invocations: 10
+Total time for all invocations: 462664 microseconds
+Average time per invocation: 46266 microseconds
+Minimum invocation time: 45844 microseconds
+Maximum invocation time: 46563 microseconds
+Performance variation: 719 microseconds
+Throughput: 21.61 calls per second
+
+=== Single Call Baseline Test ===
+Baseline test: Invoking TA to increment 100
+Baseline: TEEC_InvokeCommand: 46349 microseconds
+Baseline: TA incremented value to 101
+
+=== Cleanup Phase ===
+TEEC_CloseSession: 61317 microseconds
+TEEC_FinalizeContext: 36 microseconds
+=== OP-TEE Performance Measurement Complete ===
+

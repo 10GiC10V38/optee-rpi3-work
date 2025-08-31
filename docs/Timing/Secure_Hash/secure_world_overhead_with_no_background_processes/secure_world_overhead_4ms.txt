@@ -1,0 +1,303 @@
+# optee_example_secure_hash /media/testdata3.2MB.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40015000
+D/TA:  TA_CreateEntryPoint:264 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:290 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: /media/testdata3.2MB.json
+----------------------------------------
+D/TA:  TA_InvokeCommandEntryPoint:328 Secure Hash TA: Computing hash
+I/TA: Computing hash for 3188896 bytes
+I/TA: Hash computed successfully: 3188896 bytes -> 32 bytes (took 241000 μs)
+I/TA: Timing details - Total TEE time: 245000 μs, Hash compute: 241000 μs, REE time delta: 246000 μs
+Hash computed successfully (32 bD/TA:  TA_InvokeCommandEntryPoint:332 Secure Hash TA: Getting performance stats
+ytes)
+Hash: 27fI/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+ede76e51b463548ea5e6a9cfd162d6e6D/TC:? 0 tee_ta_close_session:510 csess 0x1018aa00 id 1
+25be9792D/TC:? 0 tee_ta_close_session:529 Destroy session
+9fc64b9aI/TA: Secure Hash TA session closed
+e916da0d1d9c4
+D/TA:  TA_DestroyEntryPoint:276 Secure Hash TA: Destroying entry point
+
+=== PERFORMANCED/TC:? 0 destroy_context:307 Destroy TA ctx (0x1018a9a0)
+ ANALYSIS REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 146335 μs
+Context Switches: 9
+Voluntary Context Switches: 0
+InVoluntary Context Switches: 9
+Total Time: 284565 μs
+CPU Time: 284178 μs (99.86%)
+Memory Peak: 4340 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 284565.00 μs
+Average IPC latency: 284565.00 μs
+CPU Utilization: 99.86%
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# [   34.274299] cam-dummy-reg: disabling
+H�# 
+# optee_example_secure_hash /media/testdata3.8MB.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40075000
+D/TA:  TA_CreateEntryPoint:264 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:290 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: /media/testdata3.8MB.json
+----------------------------------------
+D/TA:  TA_InvokeCommandEntryPoint:328 Secure Hash TA: Computing hash
+I/TA: Computing hash for 3788896 bytes
+I/TA: Hash computed successfully: 3788896 bytes -> 32 bytes (took 287000 μs)
+I/TA: Timing details - Total TEE time: 291000 μs, Hash compute: 287000 μs, REE time delta: 291000 μs
+Hash computed successfully (32 bytes)
+HD/TA:  TA_InvokeCommandEntryPoint:332 Secure Hash TA: Getting performance stats
+ash: 5d6c0b4c9c1I/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+9b7a8a29655d074e33dad0afa0593bceD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+18ff1dcaD/TC:? 0 tee_ta_close_session:529 Destroy session
+4e08f39dI/TA: Secure Hash TA session closed
+60cd9
+
+=== PERD/TA:  TA_DestroyEntryPoint:276 Secure Hash TA: Destroying entry point
+FORMANCE ANALYSID/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+S REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 169917 μs
+Context Switches: 10
+Voluntary Context Switches: 0
+InVoluntary Context Switches: 10
+Total Time: 332679 μs
+CPU Time: 332257 μs (99.87%)
+Memory Peak: 4964 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 332679.00 μs
+Average IPC latency: 332679.00 μs
+CPU Utilization: 99.87%
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# ls 
+test.txt
+# cd ..
+# cd media
+# ls
+1.5MB.pdf
+100MB-TESTFILE.ORG.pdf
+200
+40MB-TESTFILE.ORG.pdf
+FTD_5MB.mpeg
+Free_Test_Data_1MB_PDF.pdf
+Free_Test_Data_2.15MB_PDF.pdf
+Free_Test_Data_3MB_PDF.pdf
+Free_Test_Data_6MB_PDF.pdf
+Lab One.pdf
+RajeshReddyM_2024JCS2045_VerifDocs.pdf
+btech memo-converted.pdf
+matrix_multiply_program.zip
+nss_report.txt
+results.zip
+testdata(1).json
+testdata.json
+testdata1.5MB.json
+testdata3.2MB.json
+testdata3.8MB.json
+testdata3MB.json
+testdata4.2Mb.json
+testdata4.5Mb.json
+testdata4.8Mb.json
+# ex
+exec    exit    export  expr
+# optee_example_secure_hash testdata1.5MB.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40092000
+D/TA:  TA_CreateEntryPoint:264 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:290 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: testdata1.5MB.json
+----------------------------------------
+D/TA:  TA_InvokeCommandEntryPoint:328 Secure Hash TA: Computing hash
+I/TA: Computing hash for 1488896 bytes
+I/TA: Hash computed successfully: 1488896 bytes -> 32 bytes (took 113000 μs)
+I/TA: Timing details - Total TEE time: 117000 μs, Hash compute: 113000 μs, REE time delta: 117000 μs
+Hash computed successfulD/TA:  TA_InvokeCommandEntryPoint:332 Secure Hash TA: Getting performance stats
+ly (32 bytes)
+HI/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+ash: 1ecc372874dfa7f0f17D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+725e626fD/TC:? 0 tee_ta_close_session:529 Destroy session
+a15b8d08I/TA: Secure Hash TA session closed
+d552a3b651d66466D/TA:  TA_DestroyEntryPoint:276 Secure Hash TA: Destroying entry point
+d3a7442a89948
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+=== PERFORMANCE ANALYSIS REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 73660 μs
+Context Switches: 3
+Voluntary Context Switches: 0
+InVoluntary Context Switches: 3
+Total Time: 148457 μs
+CPU Time: 148328 μs (99.91%)
+Memory Peak: 2652 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 148457.00 μs
+Average IPC latency: 148457.00 μs
+CPU Utilization: 99.91%
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# ls
+1.5MB.pdf
+100MB-TESTFILE.ORG.pdf
+200
+40MB-TESTFILE.ORG.pdf
+FTD_5MB.mpeg
+Free_Test_Data_1MB_PDF.pdf
+Free_Test_Data_2.15MB_PDF.pdf
+Free_Test_Data_3MB_PDF.pdf
+Free_Test_Data_6MB_PDF.pdf
+Lab One.pdf
+RajeshReddyM_2024JCS2045_VerifDocs.pdf
+btech memo-converted.pdf
+matrix_multiply_program.zip
+nss_report.txt
+results.zip
+testdata(1).json
+testdata.json
+testdata1.5MB.json
+testdata3.2MB.json
+testdata3.8MB.json
+testdata3MB.json
+testdata4.2Mb.json
+testdata4.5Mb.json
+testdata4.8Mb.json
+# optee_example_secure_hash Lab\ One.pdf 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x4001e000
+D/TA:  TA_CreateEntryPoint:264 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:290 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: Lab One.pdf
+----------------------------------D/TA:  TA_InvokeCommandEntryPoint:328 Secure Hash TA: Computing hash
+------
+I/TA: Computing hash for 33547 bytes
+I/TA: Hash computed successfully: 33547 bytes -> 32 bytes (took 3000 μs)
+I/TA: Timing details - Total TEE time: 7000 μs, Hash compute: 3000 μs, REE time delta: 6000 μs
+Hash comD/TA:  TA_InvokeCommandEntryPoint:332 Secure Hash TA: Getting performance stats
+puted successfulI/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+ly (32 bytes)
+Hash: b8575914122D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+9749d7f3D/TC:? 0 tee_ta_close_session:529 Destroy session
+9ab71975I/TA: Secure Hash TA session closed
+c48a25bd1ff49d20D/TA:  TA_DestroyEntryPoint:276 Secure Hash TA: Destroying entry point
+8524caed4f0673a4D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+26b3b
+
+=== PERFORMANCE ANALYSIS REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 4228 μs
+Context Switches: 2
+Voluntary Context Switches: 0
+InVoluntary Context Switches: 2
+Total Time: 31776 μs
+CPU Time: 31599 μs (99.44%)
+Memory Peak: 1256 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 31776.00 μs
+Average IPC latency: 31776.00 μs
+CPU Utilization: 99.44%
+
+=== END REPORT ===
+
+
+
+
+
+if we observe with different file sizes , and no background processes , 
+every time we can observe that the time differnce is exactly 4ms no matter the file size.
+so that is the overhead which is very small.
+
+and the differnce in total time and cpu time is the overhead of host sceduling becsaue of preemption.
+

@@ -1,0 +1,29 @@
+# optee_example_secure_hash testdata4.2Mb.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x4005f000
+D/TA:  TA_CreateEntryPoint:262 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:288 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: testdata4.2Mb.json
+----------------------------------------
+Failed to compute hash: 0xffff000c (origD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+in: 0x1)D/TC:? 0 tee_ta_close_session:529 Destroy session
+
+FailedI/TA: Secure Hash TA session closed
+ to hash file: tD/TA:  TA_DestroyEntryPoint:274 Secure Hash TA: Destroying entry point
+estdata4.2Mb.jsoD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+n
+
+Secure hash computation completed.
+

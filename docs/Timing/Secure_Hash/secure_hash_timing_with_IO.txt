@@ -1,0 +1,56 @@
+# optee_example_secure_hash /media/nss_report.txt
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40092000
+D/TA:  TA_CreateEntryPoint:262 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:288 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: /media/nss_report.txt
+----------------------------------------
+D/TA:  TA_InvokeCommandEntryPoint:326 Secure Hash TA: Computing hash
+I/TA: Computing hash for 756428 bytes
+I/TA: Hash computed successfully: 756428 bytes -> 32 bytes (took 57000 μs)
+I/TA: Timing details - Total TEE time: 61000 μs, Hash compute: 57000 μs, REE time delta: 62000 μs
+Hash computed suD/TA:  TA_InvokeCommandEntryPoint:330 Secure Hash TA: Getting performance stats
+ccessfully (32 bI/TA: Performance stats retrieved - IPC: 1, RPC: 1, Hash ops: 1
+ytes)
+Hash: 5162418d9629039ebecD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+61e1bc05D/TC:? 0 tee_ta_close_session:529 Destroy session
+9910c639I/TA: Secure Hash TA session closed
+35090bb1f697492fD/TA:  TA_DestroyEntryPoint:274 Secure Hash TA: Destroying entry point
+79e06f74b4200
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+=== PERFORMANCE ANALYSIS REPORT ===
+
+--- Host Application Stats ---
+File Read I/O Time: 4927 μs
+Context Switches: 2
+Total Time: 89389 μs
+CPU Time: 89301 μs (99.90%)
+Memory Peak: 1972 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 144 bytes
+Hash Operations: 1
+
+--- Performance Metrics ---
+Average time per hash: 89389.00 μs
+Average IPC latency: 89389.00 μs
+CPU Utilization: 99.90%
+
+=== END REPORT ===
+
