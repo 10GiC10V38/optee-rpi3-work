@@ -1,0 +1,11 @@
+bigger picture about pd-ros.
+
+how is cutomer going to check the privacy and why is he cheking in the first place??
+
+
+ROS2??
+
+
+in SROS , TLS is being used , so how is it being used?
+does each application get it's own keys? and each application is signed by a trusted authotriy.
+do they exchange the certificates for communication between the applications??

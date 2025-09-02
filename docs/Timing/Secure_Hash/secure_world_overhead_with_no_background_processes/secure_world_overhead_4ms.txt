@@ -301,3 +301,13 @@ so that is the overhead which is very small.
 
 and the differnce in total time and cpu time is the overhead of host sceduling becsaue of preemption.
 
+
+and in the rest of the times , the overhead is because of the scheduling by the OS. in which involuntary context switches are happening.
+
+
+all these observations are with the secure_hash Trusted application.
+
+
+and every time the total time remains same for a given file size , but depending on the other processes , the wall time is
+changing.
+
