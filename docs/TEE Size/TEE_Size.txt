@@ -1,0 +1,62 @@
+the platform_config.h file contains the memory layout of the RPI3
+
+location of the file is  :/optee_rpi3/optee_os/core/arch/arm/plat-rpi3/
+
+Here’s a structured overview of how **OP-TEE and Linux split and use memory on a Raspberry Pi 3 (RPi3)** with 1 GB RAM, highlighting the main regions and how they are defined on the platform.
+
+## Memory Split Overview
+
+- **Secure World Memory:** Only accessible in Secure state (OP-TEE core + Trusted Apps).
+- **Non-secure World Memory:** Used by Linux (kernel and user space).
+- **Shared Memory:** Non-secure, but reserved solely for OP-TEE ↔ Linux inter-communication.
+
+## Key OP-TEE Memory Regions
+
+### TEE RAM
+- **Size:** **4 MiB**.
+- **Purpose:** Runs the OP-TEE OS core (scheduler, crypto services, syscall handling, secure storage manager).
+- **Characteristics:**
+  - Protected; not accessible by Linux.
+  - Contains OS internal data structures.
+  - Analogous to "kernel memory" in the Secure World.
+
+### TA RAM
+- **Size:** **16 MiB**.
+- **Purpose:** Execution memory for Trusted Applications (TAs), running in user mode and dynamically loaded by OP-TEE core (via TEEC_InvokeCommand()).
+- **Characteristics:**
+  - Secure world memory (Linux cannot access).
+  - Used as heap/stack for TAs (e.g., secure storage, key manager, crypto services).
+  - Holds all user-mode Trusted Applications.
+
+### Shared Memory
+- **Size:** **4 MiB** (default on RPi3).
+- **Purpose:** Buffer for Linux ↔ OP-TEE communication.
+- **Characteristics:**
+  - Not "secure" memory, but excluded from normal Linux usage.
+  - Used for passing parameters and results or bulk data transfer.
+  - Example: Linux sends a buffer to OP-TEE, handled in this region.
+
+## TrustZone DRAM (TZDRAM) Layout
+
+- **Definition:** A contiguous block of physical DRAM reserved for Secure World only, not accessible by Normal World (Linux).
+- **Contains:**
+  - **TEE RAM (4 MiB)** – OP-TEE OS Core
+  - **TA RAM (16 MiB)** – Trusted Apps memory
+
+- **Configuration:** Set in `platform_config.h` (OP-TEE platform configuration header).
+
+## Summary Table
+
+| Region        | Size   | Purpose                                               | Accessible By            |
+|---------------|--------|-------------------------------------------------------|--------------------------|
+| TEE RAM       | 4 MiB  | OP-TEE OS/Core                                        | Secure World (OP-TEE)  |
+| TA RAM        | 16 MiB | Trusted Applications (TAs)                            | Secure World (OP-TEE)  |
+| Shared Memory | 4 MiB  | Linux ↔ OP-TEE Communication                          | Both (restricted use)  |
+| Rest of DRAM  | ~976 MiB | Linux/Normal World (kernel, user space)             | Normal World             |
+
+## References
+
+- Platform-specific layout defined in OP-TEE source (`platform_config.h`).
+- RAM regions sizes may be adjusted depending on build options and hardware platform.
+
+This structured overview should clarify how OP-TEE and Linux divide and utilize physical memory regions on the RPi3 platform.
