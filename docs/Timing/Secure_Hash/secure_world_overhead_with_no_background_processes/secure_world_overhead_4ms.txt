@@ -311,3 +311,86 @@ all these observations are with the secure_hash Trusted application.
 and every time the total time remains same for a given file size , but depending on the other processes , the wall time is
 changing.
 
+
+
+
+## Key Insights
+
+### World Switch vs Context Switch
+
+- **World Switch (Normal ↔ Secure via SMC):**
+  - Lightweight: Saves only minimal CPU state (registers, PC, SPSR).
+  - Triggered during each `TEEC_InvokeCommand()`.
+  - Minimal overhead: typically a few microseconds on Cortex-A53.
+- **Linux Context Switch:**
+  - Occurs when Linux scheduler preempts a process.
+  - More frequent with increased background load.
+  - CPU time accounts only for actual running time — unaffected by world switch.
+
+**Conclusion:**  
+The **Secure World call does not itself trigger context switches**; context switches are caused solely by Linux scheduler preemption or multitasking.
+
+***
+
+### Secure World Execution
+
+- TA execution is **CPU-bound and deterministic**.
+- Total wall-clock time can vary due to system scheduling and background load.
+- **CPU time for TA remains constant** — computation itself is stable and repeatable.
+- Secure World calls are not atomic in scheduling, but **are deterministic for computation**.
+
+***
+
+### Overhead Observations
+
+- **SMC (Secure Monitor Call) entry/exit overhead is negligible** versus actual TA computation.
+- Context switch overhead only occurs if other processes compete for CPU.
+- Single benchmark runs with no OS background load have **effectively zero Linux scheduler overhead**.
+
+***
+
+## Hash Performance Benchmark
+
+| File         | Size       | TEE Total Time | Hash Compute | Overhead (TEE Total - Hash) |
+|--------------|------------|---------------|--------------|-----------------------------|
+| Lab One.pdf  | 33 KB      | 7 ms   | 3 ms  | 4 ms                 |
+| Lab One.pdf  | 1.5 MB     | 117 ms | 113 ms| 4 ms                 |
+| Lab One.pdf  | 3.2 MB     | 245 ms | 241 ms| 4 ms                 |
+
+- **Hash compute time scales with file size, as expected**.
+- **Overhead between Total TEE time and hash computation remains nearly constant (~4 ms)**.
+
+***
+
+## Example: test.txt Benchmark
+
+- File Size: 998 bytes
+- TEE Total Time: 4000 μs
+- Hash Compute Time: 0 μs
+- REE (Linux) Time Delta: 5000 μs
+- **Context Switches:** 0
+
+**Host Stats:**
+- File Read I/O: 1969 μs
+- Total Time: 28959 μs
+- CPU Time: 28962 μs (100.01%)
+- Memory Peak: 1332 KB
+
+**TA Stats:**
+- IPC Calls: 1
+- RPC Calls: 1
+- Hash Operations: 1
+- TEE Stack Usage: 144 bytes
+
+**Key Metric:**  
+When context switches are zero (minimal load), **TEE setup overhead remains constant**, confirming that context switches are caused only by OS scheduling and process preemption, not by Secure World transitions.
+
+***
+
+## Summary
+
+- **Context switches arise only from OS scheduling, not world switching**.
+- **Secure World entry/exit overhead is small and consistent regardless of TA workload or file size**.
+- **TA computation time scales proportionally to input size and is deterministic for identical runs**.
+
+This detailed formatting clarifies the performance mechanics and measurement results for OP-TEE world switching, context switching, and hash computation.
