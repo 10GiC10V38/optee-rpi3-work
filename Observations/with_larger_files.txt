@@ -1,0 +1,155 @@
+when working with the larger files , first time it is taking longer time and the cpu utiization time is also less.
+but when the same file is loaded again then it is not taking much time and also cpu utilization is almost 100%.
+
+
+example for the file with size 4.5MB
+
+
+# optee_example_secure_hash testdata4.5Mb.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+Single-shot limit: 4194304 bytes, Chunk size: 1048576 bytes
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40093000
+D/TA:  TA_CreateEntryPoint:375 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:401 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file: testdata4.5Mb.jD/TA:  hash_init:131 Stream hash operation initialized.
+son
+----------------------------------------
+File size: 4488896 bytes
+Using chunked hashing for large file
+File size: 4488896 bytes, will process in chunks of 1048576 bytes
+Hash operation initialized
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 294592 bytes.
+Processed 448889I/TA: Streaming hash computed successfully.
+6/4488896 bytes I/TA: Timing details - Total TEE time: 579000 us, Hash compute: 342000 us, REE time delta: 579000 us
+(100.0%) - 5 chunks
+Chunked hasD/TA:  TA_InvokeCommandEntryPoint:460 Secure Hash TA: Getting performance stats
+h computed succeI/TA: Performance stats retrieved - IPC: 7, RPC: 1, Hash ops: 1
+ssfully (32 bytes) from 5 chunksD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+
+Hash: D/TC:? 0 tee_ta_close_session:529 Destroy session
+a0ea0d6bI/TA: Secure Hash TA session closed
+dcc946967e1d7474D/TA:  TA_DestroyEntryPoint:387 Secure Hash TA: Destroying entry point
+128cca00fec12b13D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+83ebaedcaf536d084c30b223
+
+=== PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 176082 us
+Context Switches: 36
+Voluntary Context Switches: 9
+Involuntary Context Switches: 27
+Total Time: 595306 us
+CPU Time: 444478 us (74.66%)
+Memory Peak: 2432 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 7
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 80 bytes
+Hash Operations: 1
+Hash Compute Time: 342000 us
+TEE Time Delta: 579000 us
+REE Time Delta: 579000 us
+
+--- Performance Metrics ---
+Average time per hash operation: 595306.00 us
+Average IPC latency: 85043.71 us
+CPU Utilization: 74.66%
+I/O vs Compute Time Ratio: 0.51:1
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# optee_example_secure_hash testdata4.5Mb.json 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+Single-shot limit: 4194304 bytes, Chunk size: 1048576 bytes
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40018000
+D/TA:  TA_CreateEntryPoint:375 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:401 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file:D/TA:  hash_init:131 Stream hash operation initialized.
+ testdata4.5Mb.json
+----------------------------------------
+File size: 4488896 bytes
+Using chunked hashing for large file
+File size: 4488896 bytes, will process in chunks of 1048576 bytes
+Hash operation initialized
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 294592 bytes.
+ProcesseI/TA: Streaming hash computed successfully.
+d 4488896/448889I/TA: Timing details - Total TEE time: 417000 us, Hash compute: 340000 us, REE time delta: 416000 us
+6 bytes (100.0%) - 5 chuD/TA:  TA_InvokeCommandEntryPoint:460 Secure Hash TA: Getting performance stats
+nks
+Chunked hasI/TA: Performance stats retrieved - IPC: 7, RPC: 1, Hash ops: 1
+h computed successfully (32 byteD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+s) from D/TC:? 0 tee_ta_close_session:529 Destroy session
+5 chunksI/TA: Secure Hash TA session closed
+
+Hash: a0ea0d6bD/TA:  TA_DestroyEntryPoint:387 Secure Hash TA: Destroying entry point
+dcc946967e1d7474D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+128cca00fec12b1383ebaedcaf536d084c30b223
+
+=== PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 14293 us
+Context Switches: 13
+Voluntary Context Switches: 0
+Involuntary Context Switches: 13
+Total Time: 432228 us
+CPU Time: 431624 us (99.86%)
+Memory Peak: 2348 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 7
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 80 bytes
+Hash Operations: 1
+Hash Compute Time: 340000 us
+TEE Time Delta: 417000 us
+REE Time Delta: 416000 us
+
+--- Performance Metrics ---
+Average time per hash operation: 432228.00 us
+Average IPC latency: 61746.86 us
+CPU Utilization: 99.86%
+I/O vs Compute Time Ratio: 0.04:1
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# 
+

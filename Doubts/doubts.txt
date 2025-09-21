@@ -9,3 +9,11 @@ ROS2??
 in SROS , TLS is being used , so how is it being used?
 does each application get it's own keys? and each application is signed by a trusted authotriy.
 do they exchange the certificates for communication between the applications??
+
+
+in the context switches part , we can see 0 as no.of context switches.so does that mean the normal OS and Trusted OS have 
+same privilege levels even though memory accessible is different??
+
+
+for calculating the hash of a larger file , do we need to use the shared memory and then send the data in chunks
+or should we work directly on the physical memory?
