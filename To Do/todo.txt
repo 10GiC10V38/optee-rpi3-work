@@ -1,0 +1,1 @@
+try to vary the file size from 1-4 MB chunks and observe the overall latency and per IPC latency.

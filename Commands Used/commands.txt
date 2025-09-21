@@ -1,0 +1,6 @@
+for connecting to the rpi3 using serial cable --- sudo picocom -b 115200 /dev/ttyUSB0
+
+and to update the TA and just build that part , goto build and -- make buildroot. (if other changes also made , then make clean nad then do make buildroot).
+
+
+note the location of the binary files that and .ta files that needs to be transferred.

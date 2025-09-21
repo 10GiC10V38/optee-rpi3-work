@@ -153,3 +153,520 @@ I/O vs Compute Time Ratio: 0.04:1
 Secure hash computation completed.
 # 
 
+
+Here is your summary rewritten in a clean, structured, and properly formatted manner:
+
+***
+
+## TEE Application: Key Observations and Analysis
+
+### TEE Architecture and Design
+- **Streaming is Essential for Large Files**  
+  A Trusted Application (TA) has limited memory. Large files must be processed using a streaming API (INIT, UPDATE, FINAL) to avoid loading the entire file into secure memory at once.
+
+- **Session Context is Key**  
+  The streaming API relies on a session context (`sess_ctx`) to maintain the state of the cryptographic operation (`TEE_OperationHandle`) across multiple calls from the host application.
+
+- **Host Application’s Role**  
+  The host application behaves as the *producer*. It should read large files in small, efficient chunks and feed them to the TA incrementally. Reading the entire file into memory first breaks the scalability model.
+
+- **IPC vs. RPC**  
+  - **IPC (Inter-Process Communication):** Normal World → Secure World calls. Each `TEEC_InvokeCommand` is one IPC call. Example: Your log showed 7 IPC calls (INIT + 5 UPDATEs + FINAL).  
+  - **RPC (Remote Procedure Call):** Secure World → Normal World calls to request services. Example: Your log showed 1 RPC — the TA calling `TEE_GetREETime()`.
+
+***
+
+### Performance Analysis and Measurement
+- **OS File Caching**  
+  - First run on a file is *I/O-bound* (slow disk, low CPU usage).  
+  - Subsequent runs are *CPU-bound* (~100% CPU usage) as data is served from RAM page cache.  
+
+- **Measure on a Warm Cache**  
+  Always run the test once to prime the cache before recording results from subsequent runs.
+
+- **Calculating TEE Overhead**  
+  Compare baseline hashing (without TEE) against TEE-based hashing:  
+  - Total Overhead: ~78 ms for the entire 4.5 MB file.  
+  - Average Overhead: ~11.1 ms per IPC call (7 calls total).  
+  - This overhead reflects communication costs (world switches, API calls), not hashing work itself.
+
+- **Context Switches**  
+  - 0 Voluntary Switches: Confirms CPU-bound execution (no waiting for slow I/O).  
+  - 13 Involuntary Switches: Normal scheduler activity to share CPU with other system processes.
+
+***
+
+### Advanced Profiling
+- **Application Limitation**  
+  The application cannot measure time slices lost during context switches, since it is paused and unaware of those intervals.
+
+- **Use System Profilers**  
+  Kernel-aware profiling tools (e.g., `perf`) are required for this insight.
+
+- **perf on Raspberry Pi 3**  
+  - Possible to use `perf` with RPi3, though the tool often needs to be added into Buildroot or Yocto builds and recompiled.  
+  - Once enabled, `perf` can provide a nanosecond-level CPU timeline, showing exactly when your application was scheduled on/off the processor.
+
+***
+
+
+
+with 100MB file
+
+
+# optee_example_secure_hash 100MB-TESTFILE.ORG.pdf 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+Single-shot limit: 4194304 bytes, Chunk size: 1048576 bytes
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x4001e000
+D/TA:  TA_CreateEntryPoint:375 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:401 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file:D/TA:  hash_init:131 Stream hash operation initialized.
+ 100MB-TESTFILE.ORG.pdf
+----------------------------------------
+File size: 107058724 bytes
+Using chunked hashing for large file
+File size: 107058724 bytes, will process in chunks of 1048576 bytes
+Hash operation initialized
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 10485760/107058724 bytes (9.8%) - 10 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 20971520/107058724 bytes (19.6%) - 20 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 31457280/107058724 bytes (29.4%) - 30 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 41943040/107058724 bytes (39.2%) - 40 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 52428800/107058724 bytes (49.0%) - 50 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 62914560/107058724 bytes (58.8%) - 60 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 73400320/107058724 bytes (68.6%) - 70 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 83886080/107058724 bytes (78.4%) - 80 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 94371840/107058724 bytes (88.1%) - 90 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 104857600/107058724 bytes (97.9%) - 100 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 103972 bytes.
+ProcesseI/TA: Streaming hash computed successfully.
+d 107058724/1070I/TA: Timing details - Total TEE time: 9558000 us, Hash compute: 8128000 us, REE time delta: 9558000 us
+58724 bytes (100.0%) - 103 chunkD/TA:  TA_InvokeCommandEntryPoint:460 Secure Hash TA: Getting performance stats
+s
+Chunked hash I/TA: Performance stats retrieved - IPC: 105, RPC: 1, Hash ops: 1
+computed successfully (32 bytes)D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+ from 10D/TC:? 0 tee_ta_close_session:529 Destroy session
+3 chunksI/TA: Secure Hash TA session closed
+
+Hash: e95ce414D/TA:  TA_DestroyEntryPoint:387 Secure Hash TA: Destroying entry point
+6e3ffe7d5fde3634D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+0c01889f7634d6f91b92fbae1606bef9cb4a7cfb
+
+=== PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 236157 us
+Context Switches: 294
+Voluntary Context Switches: 0
+Involuntary Context Switches: 294
+Total Time: 9573909 us
+CPU Time: 9558984 us (99.84%)
+Memory Peak: 2348 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 105
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 80 bytes
+Hash Operations: 1
+Hash Compute Time: 8128000 us
+TEE Time Delta: 9558000 us
+REE Time Delta: 9558000 us
+
+--- Performance Metrics ---
+Average time per hash operation: 9573909.00 us
+Average IPC latency: 91180.09 us
+CPU Utilization: 99.84%
+I/O vs Compute Time Ratio: 0.03:1
+
+=== END REPORT ===
+
+Secure hash computation completed.
+# 
+
+
+with 40MB file:
+
+# optee_example_secure_hash 40MB-TESTFILE.ORG.pdf 
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with PerD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+formance MonitorD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ing
+===D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+========================================
+Single-shot limit: 4194304 bytes, Chunk size: 1048576 bytes
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40075000
+D/TA:  TA_CreateEntryPoint:375 Secure Hash TA: Creating entry point
+D/TA:  TA_OpenSessionEntryPoint:401 Secure Hash TA: Opening session
+I/TA: Secure Hash TA session opened successfully
+
+Processing file:D/TA:  hash_init:131 Stream hash operation initialized.
+ 40MB-TESTFILE.ORG.pdf
+----------------------------------------
+File size: 42822485 bytes
+Using chunked hashing for large file
+File size: 42822485 bytes, will process in chunks of 1048576 bytes
+Hash operation initialized
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 10485760/42822485 bytes (24.5%) - 10 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 20971520/42822485 bytes (49.0%) - 20 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 31457280/42822485 bytes (73.5%) - 30 chunks
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+D/TA:  hash_update:166 Updated stream hash with 1048576 bytes.
+Processed 41943040/42822485 bytes (97.9%) - 40 chunks
+D/TA:  hash_update:166 Updated stream hash with 879445 bytes.
+Processed 428224I/TA: Streaming hash computed successfully.
+85/42822485 byteI/TA: Timing details - Total TEE time: 3829000 us, Hash compute: 3249000 us, REE time delta: 3830000 us
+s (100.0%) - 41 chunks
+Chunked D/TA:  TA_InvokeCommandEntryPoint:460 Secure Hash TA: Getting performance stats
+hash computed suI/TA: Performance stats retrieved - IPC: 43, RPC: 1, Hash ops: 1
+ccessfully (32 bytes) from 41 chD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+unks
+HaD/TC:? 0 tee_ta_close_session:529 Destroy session
+sh: 1b8aI/TA: Secure Hash TA session closed
+78075bdac18361ffD/TA:  TA_DestroyEntryPoint:387 Secure Hash TA: Destroying entry point
+be3b494b8095a4f6D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+4a2b95d18c5554bd588c84190621
+
+=== PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 97405 us
+Context Switches: 117
+Voluntary Context Switches: 0
+Involuntary Context Switches: 117
+Total Time: 3846021 us
+CPU Time: 3840449 us (99.86%)
+Memory Peak: 2416 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 43
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 80 bytes
+Hash Operations: 1
+Hash Compute Time: 3249000 us
+TEE Time Delta: 3829000 us
+REE Time Delta: 3830000 us
+
+--- Performance Metrics ---
+Average time per hash operation: 3846021.00 us
+Average IPC latency: 89442.35 us
+CPU Utilization: 99.86%
+I/O vs Compute Time Ratio: 0.03:1
+
+=== END REPORT ===
+
+
+
+
+Here is your complete set of observations rewritten and presented as a **formal structured performance report**.  
+
+***
+
+# Performance Analysis Report  
+**TEE-Based Secure Hashing on Raspberry Pi 3**  
+
+***
+
+## 1. Executive Summary  
+
+This report presents the performance analysis of a secure file hashing utility executed within the OP-TEE Trusted Execution Environment (TEE) on a Raspberry Pi 3. The results reveal a system that is both **efficient and predictable**, exhibiting *near-perfect linear scalability* with input size.  
+
+Two hashing strategies were evaluated:  
+
+- **Chunked Hashing:**  
+  Highly scalable, minimal memory footprint, suitable for any file size. Predictable TEE overhead of ~11.1–11.6 milliseconds per IPC call.  
+
+- **Single-Shot Hashing:**  
+  Lower overall overhead (~4 ms) but non-scalable, as it requires the entire file in memory.  
+
+Across all experiments, the TEE communication overhead was found to be **constant per IPC call**, and the execution profile was consistently CPU-bound on a warm file cache.  
+
+***
+
+## 2. Objective  
+
+The goal of this study was to characterize the performance of a TEE-based hashing solution, specifically:  
+
+- Measuring overhead from world switches (IPC) and remote calls (RPC).  
+- Evaluating scalability with different file sizes and file formats.  
+- Comparing the trade-offs between **chunked streaming** and **single-shot** approaches.  
+
+***
+
+## 3. Key Findings & Analysis  
+
+### Finding 1: Excellent Linear Scalability  
+
+The **Chunked Hashing** method scaled almost perfectly in proportion to the file size.  
+
+#### Test Data: Large Files (40MB vs. 100MB)  
+
+| Metric               | 40MB File          | 100MB File         | Scaling Factor |
+|-----------------------|-------------------|-------------------|----------------|
+| File Size            | 42.8 MB           | 107.1 MB          | 2.50x          |
+| Total Time           | 3,846,021 µs      | 9,573,909 µs      | 2.49x          |
+| Hash Compute Time    | 3,249,000 µs      | 8,128,000 µs      | 2.50x          |
+| File Read I/O Time   | 97,405 µs         | 236,157 µs        | 2.42x          |
+| IPC Calls            | 43                | 105               | 2.44x          |
+| Involuntary Switches | 117               | 294               | 2.51x          |  
+
+**Conclusion:** Doubling the input size doubles the processing time. No bottlenecks were detected.  
+
+#### Test Data: Medium Files (4.8MB JSON vs. 6.2MB PDF)  
+
+| Metric            | 4.8MB JSON       | 6.2MB PDF        | Scaling Factor |
+|--------------------|-----------------|-----------------|----------------|
+| File Size         | 4.78 MB         | 6.24 MB         | 1.30x          |
+| Total Time        | 457,981 µs      | 583,328 µs      | 1.27x          |
+| Hash Compute Time | 365,000 µs      | 476,000 µs      | 1.30x          |  
+
+**Conclusion:** Again, performance scaled linearly with data size, independent of file format.  
+
+***
+
+### Finding 2: Constant and Predictable TEE Overhead  
+
+Calculations show that the per-call overhead remains consistent across all runs.  
+
+- **40MB File:**  
+  Total Overhead = (3,846,021 – 97,405) – 3,249,000 = **499,616 µs**  
+  Average per Call = 499,616 / 43 = **~11,619 µs (~11.6 ms)**  
+
+- **100MB File:**  
+  Total Overhead = (9,573,909 – 236,157) – 8,128,000 = **1,209,752 µs**  
+  Average per Call = 1,209,752 / 105 = **~11,521 µs (~11.5 ms)**  
+
+- **4.8MB JSON:** Overhead per call = **~11,133 µs (~11.1 ms)**  
+- **6.2MB PDF:** Overhead per call = **~11,118 µs (~11.1 ms)**  
+
+**Conclusion:** Across all file sizes, overhead per IPC call was stable at **11.1–11.6 ms**, enabling precise performance modeling.  
+
+***
+
+### Finding 3: Stable Performance Profile  
+
+The percentage of execution time spent on hashing, overhead, and I/O was consistent regardless of file size or format.  
+
+- **40MB File:**  
+  - Hashing: ~84.5%  
+  - Overhead: ~13.0%  
+  - I/O: ~2.5%  
+
+- **100MB File:**  
+  - Hashing: ~84.9%  
+  - Overhead: ~12.6%  
+  - I/O: ~2.5%  
+
+- **4.8MB JSON vs. 6.2MB PDF:**  
+  - Hashing: ~80–82%  
+  - Overhead: ~15–17%  
+  - I/O: ~3%  
+
+**Conclusion:** The balance between cryptographic work, communication overhead, and I/O remains unchanged with scale, proving consistency and predictability.  
+
+***
+
+### Finding 4: Single-Shot vs. Chunked Method Trade-Off  
+
+The single-shot method shows **lower communication overhead** but **poor scalability**.  
+
+#### Single-Shot Run (Medium File)  
+- File Read I/O: 104,001 µs  
+- Total Execution Time: 209,445 µs  
+- Time in TEE: 175,000 µs  
+- Hash Compute Time: 171,000 µs  
+- Overhead in TEE = 4,000 µs (**4 ms total overhead**)  
+
+#### Method Comparison  
+
+| Feature             | Chunked Hashing                     | Single-Shot Hashing                 |
+|----------------------|-------------------------------------|-------------------------------------|
+| Memory Usage        | Very low & constant (fixed buffer)  | High; equals entire file size        |
+| TEE Overhead        | ~11.5 ms per IPC call              | ~4 ms total                         |
+| Scalability         | Excellent; works for any file size  | Poor; fails on large files          |
+| Best Use Case       | Large files, scalable workloads     | Small-to-medium files in memory      |  
+
+**Conclusion:**  
+- **Chunked Hashing**: Best for general use, reliable and scalable.  
+- **Single-Shot Hashing**: Best for small files where efficiency of one IPC call trumps scalability concerns.  
+
+***
+
+## 4. Conclusion & Recommendations  
+
+The evaluation confirms that the TEE-based hashing solution is:  
+
+- **Scalable:** Linear performance scaling across all file sizes.  
+- **Predictable:** Constant overhead per IPC call (~11.1–11.6 ms).  
+- **Consistent:** Performance profile stable across file sizes and formats.  
+
+### Recommended Strategy  
+- **General Use:** Adopt **Chunked Hashing** as the default, ensuring scalability and predictable memory usage.  
+- **Special Cases:** Use **Single-Shot Hashing** only for small files, where minimal IPC calls outweigh memory and scalability concerns.  
+
+### Final Assessment  
+The hashing solution is **robust, efficient, and production-ready**, with well-understood overheads and no hidden performance risks.  
+
+---  
+
+
+
+and even for cold caches the results are consistent. only the I/O time is getting increased.
+and I/O time is not considered for the overhead calculation as it is happening in the Normal World.
