@@ -154,7 +154,7 @@ Secure hash computation completed.
 # 
 
 
-Here is your summary rewritten in a clean, structured, and properly formatted manner:
+
 
 ***
 
@@ -515,7 +515,6 @@ I/O vs Compute Time Ratio: 0.03:1
 
 
 
-Here is your complete set of observations rewritten and presented as a **formal structured performance report**.  
 
 ***
 

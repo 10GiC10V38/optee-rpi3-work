@@ -1,1 +1,11 @@
 try to vary the file size from 1-4 MB chunks and observe the overall latency and per IPC latency.
+
+
+read and understand the kernel attestation.
+
+add clear metrics in the results produced by the performance stats.(like adding total overhead and overhead per IPC ).
+
+try to collect data from multiple file sizes and multiple chunk sizes and do analysis on it.
+
+
+make documentation even more clearer.
