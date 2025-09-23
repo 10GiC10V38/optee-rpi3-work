@@ -59,4 +59,3 @@ Here’s a structured overview of how **OP-TEE and Linux split and use memory on
 - Platform-specific layout defined in OP-TEE source (`platform_config.h`).
 - RAM regions sizes may be adjusted depending on build options and hardware platform.
 
-This structured overview should clarify how OP-TEE and Linux divide and utilize physical memory regions on the RPi3 platform.

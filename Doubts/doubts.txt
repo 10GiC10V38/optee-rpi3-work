@@ -17,3 +17,10 @@ same privilege levels even though memory accessible is different??
 
 for calculating the hash of a larger file , do we need to use the shared memory and then send the data in chunks
 or should we work directly on the physical memory?
+
+when to use what? whether working directly with physical address or with virtual memory.
+
+right now it is assumed that GPS (or any sensor) data is going to be passed through the shared memory to the ta from normal world. so calculating the hash by sending the data in chunks.
+
+
+

@@ -1,0 +1,394 @@
+tried to get the results with varying the chunk size from 1-4 MB
+
+this is for 40MB file with 1 MB chunk size
+
+
+ = 112 bytes
+
+I/TA: Streaming hash computed successfully.
+
+I/TA: Enhanced timing details:
+
+I/TA:   Total TEE session time: 5333000 us
+
+I/TA:   Hash finalization time: 0 ns
+
+I/TA:   Total hash compute time: 3253000 us
+
+I/TA:   Total bytes processed: 42822485
+
+I/TA:   Peak stack usage: 112 bytes
+
+I/TA:   REE time delta: 5333000 us
+
+Chunked hash computed suD/TA:  TA_InvokeCommandEntryPoint:549 Command invoked: 2
+
+ccessfully (32 bD/TA:  TA_InvokeCommandEntryPoint:565 Secure Hash TA: Getting performance stats
+
+ytes) from 41 chI/TA: Performance stats retrieved:
+
+unks
+
+Hash: 1b8aI/TA:   IPC calls: 43
+
+78075bdac18361ffI/TA:   RPC count: 1
+
+be3b494b8095a4f6I/TA:   Hash operations: 1
+
+4a2b95d18c5554bdI/TA:   Peak stack usage: 112 bytes
+
+588c84190621
+
+I/TA:   Total hash compute time: 3253000 us
+
+
+=== ENHANCED PERFORMANCED/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+
+ ANALYSID/TC:? 0 tee_ta_close_session:529 Destroy session
+
+S REPORTI/TA: Session closing stats:
+
+ (Chunked) ===
+
+I/TA:   Session duration: 5440000 us
+
+
+--- Host AppliI/TA:   Total bytes processed: 42822485
+
+cation Stats ---I/TA:   Operation active: No
+
+
+File Read I/O I/TA: Secure Hash TA session closed
+
+Time: 71282 us
+
+D/TA:  TA_DestroyEntryPoint:466 Secure Hash TA: Destroying entry point
+
+Context SwitchesI/TA: Final stats - Max stack usage: 112 bytes, Total hash ops: 1
+
+: 194
+
+VoluntaryD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+ Context Switches: 0
+
+Involuntary Context Switches: 194
+
+Total Time: 5410266 us
+
+CPU Time: 5398505 us (99.78%)
+
+Memory Peak: 2400 KB
+
+
+--- Trusted Application Stats ---
+
+IPC Calls: 43
+
+RPC Count: 1
+
+Secure Storage Access: 1
+
+TEE Stack Usage: 112 bytes
+
+Hash Operations: 1
+
+Hash Compute Time: 3253000 us
+
+TEE Time Delta: 5333000 us
+
+REE Time Delta: 5333000 us
+
+
+--- Enhanced Performance Metrics ---
+
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+
+Total Secure World Time: 5333000 us
+
+Pure Hash Compute Time: 3253000 us
+
+Total Overhead: 2080000 us (39.00% of secure world time)
+
+Average Latency per IPC Call: 125820.14 us
+
+Average time per hash operation: 5410266.00 us
+
+CPU Utilization: 99.78%
+
+I/O vs Compute Time Ratio: 0.02:1
+
+Overall Throughput: 7.55 MB/s
+
+Hash Compute Throughput: 12.55 MB/s
+
+
+=== END ENHANCED REPORT ===
+
+
+this is for 40MB with 3MB chunk file
+
+D/TA:  log_memory_checkpoint:123 Memory checkpoint [hash_final_before_cleanup]: Stack usage = 112 bytes
+
+D/TA:  log_memory_checkpoint:123 Memory checkpoint [hash_final_end]: Stack usage = 112 bytes
+
+I/TA: Streaming hash computed successfully.
+
+I/TA: Enhanced timing details:
+
+I/TA:   Total TEE session time: 4172000 us
+
+I/TA:   Hash finalization time: 0 ns
+
+I/TA:   Total hash compute time: 3251000 us
+
+I/TA:   Total bytes processed: 42822485
+
+I/TA:   Peak stack usage: 112 bytes
+
+I/TA:   REE time delta: 4172000 us
+
+Chunked hash computed successfully (32 bD/TA:  TA_InvokeCommandEntryPoint:549 Command invoked: 2
+
+ytes) from 14 chD/TA:  TA_InvokeCommandEntryPoint:565 Secure Hash TA: Getting performance stats
+
+unks
+
+Hash: 1b8aI/TA: Performance stats retrieved:
+
+78075bdac18361ffI/TA:   IPC calls: 16
+
+be3b494b8095a4f6I/TA:   RPC count: 1
+
+4a2b95d18c5554bdI/TA:   Hash operations: 1
+
+588c84190621
+
+I/TA:   Peak stack usage: 112 bytes
+
+I/TA:   Total hash compute time: 3251000 us
+
+
+=== ENHANCED PERFORMANCED/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+
+ ANALYSID/TC:? 0 tee_ta_close_session:529 Destroy session
+
+S REPORTI/TA: Session closing stats:
+
+ (Chunked) ===
+
+I/TA:   Session duration: 4278000 us
+
+
+--- Host AppliI/TA:   Total bytes processed: 42822485
+
+cation Stats ---I/TA:   Operation active: No
+
+
+File Read I/O I/TA: Secure Hash TA session closed
+
+Time: 82216 us
+
+D/TA:  TA_DestroyEntryPoint:466 Secure Hash TA: Destroying entry point
+
+Context SwitchesI/TA: Final stats - Max stack usage: 112 bytes, Total hash ops: 1
+
+: 175
+
+VoluntaryD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+ Context Switches: 0
+
+Involuntary Context Switches: 175
+
+Total Time: 4247984 us
+
+CPU Time: 4237122 us (99.74%)
+
+Memory Peak: 4396 KB
+
+
+--- Trusted Application Stats ---
+
+IPC Calls: 16
+
+RPC Count: 1
+
+Secure Storage Access: 1
+
+TEE Stack Usage: 112 bytes
+
+Hash Operations: 1
+
+Hash Compute Time: 3251000 us
+
+TEE Time Delta: 4172000 us
+
+REE Time Delta: 4172000 us
+
+
+--- Enhanced Performance Metrics ---
+
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+
+Total Secure World Time: 4172000 us
+
+Pure Hash Compute Time: 3251000 us
+
+Total Overhead: 921000 us (22.08% of secure world time)
+
+Average Latency per IPC Call: 265499.00 us
+
+Average time per hash operation: 4247984.00 us
+
+CPU Utilization: 99.74%
+
+I/O vs Compute Time Ratio: 0.03:1
+
+Overall Throughput: 9.61 MB/s
+
+Hash Compute Throughput: 12.56 MB/s
+
+
+=== END ENHANCED REPORT ===
+
+
+and this is for 2MB chunk 
+
+%) - 21 chunks
+
+D/TA:  log_memory_checkpoint:123 Memory checkpoint [hash_final_before_cleanup]: Stack usage = 112 bytes
+
+D/TA:  log_memory_checkpoint:123 Memory checkpoint [hash_final_end]: Stack usage = 112 bytes
+
+I/TA: Streaming hash computed successfully.
+
+I/TA: Enhanced timing details:
+
+I/TA:   Total TEE session time: 4492000 us
+
+I/TA:   Hash finalization time: 0 ns
+
+I/TA:   Total hash compute time: 3253000 us
+
+I/TA:   Total bytes processed: 42822485
+
+I/TA:   Peak stack usage: 112 bytes
+
+I/TA:   REE time delta: 4492000 us
+
+Chunked hash computed successfulD/TA:  TA_InvokeCommandEntryPoint:549 Command invoked: 2
+
+ly (32 bytes) frD/TA:  TA_InvokeCommandEntryPoint:565 Secure Hash TA: Getting performance stats
+
+om 21 chunks
+
+HaI/TA: Performance stats retrieved:
+
+sh: 1b8a78075bdaI/TA:   IPC calls: 23
+
+c18361ffbe3b494bI/TA:   RPC count: 1
+
+8095a4f64a2b95d1I/TA:   Hash operations: 1
+
+8c5554bd588c8419I/TA:   Peak stack usage: 112 bytes
+
+0621
+
+I/TA:   Total hash compute time: 3253000 us
+
+
+=== ENHANCED PERFORMANCED/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+
+ ANALYSID/TC:? 0 tee_ta_close_session:529 Destroy session
+
+S REPORTI/TA: Session closing stats:
+
+ (Chunked) ===
+
+I/TA:   Session duration: 4598000 us
+
+
+--- Host AppliI/TA:   Total bytes processed: 42822485
+
+cation Stats ---I/TA:   Operation active: No
+
+
+File Read I/O I/TA: Secure Hash TA session closed
+
+D/TA:  TA_DestroyEntryPoint:466 Secure Hash TA: Destroying entry point
+
+
+Context SwitcheI/TA: Final stats - Max stack usage: 112 bytes, Total hash ops: 1
+
+s: 175
+
+VoluntarD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+y Context Switches: 0
+
+Involuntary Context Switches: 175
+
+Total Time: 4568928 us
+
+CPU Time: 4558461 us (99.77%)
+
+Memory Peak: 3384 KB
+
+
+--- Trusted Application Stats ---
+
+IPC Calls: 23
+
+RPC Count: 1
+
+Secure Storage Access: 1
+
+TEE Stack Usage: 112 bytes
+
+Hash Operations: 1
+
+Hash Compute Time: 3253000 us
+
+TEE Time Delta: 4492000 us
+
+REE Time Delta: 4492000 us
+
+
+--- Enhanced Performance Metrics ---
+
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+
+Total Secure World Time: 4492000 us
+
+Pure Hash Compute Time: 3253000 us
+
+Total Overhead: 1239000 us (27.58% of secure world time)
+
+Average Latency per IPC Call: 198649.04 us
+
+Average time per hash operation: 4568928.00 us
+
+CPU Utilization: 99.77%
+
+I/O vs Compute Time Ratio: 0.03:1
+
+Overall Throughput: 8.94 MB/s
+
+Hash Compute Throughput: 12.55 MB/s
+
+
+
+| Metric             | 1MB Chunk  | 2MB Chunk  | 3MB Chunk  |
+|--------------------|------------|------------|------------|
+| Total Time         | 5.41 s     | 4.57 s     | 4.25 s     |
+| Overall Throughput | 7.55 MB/s  | 8.94 MB/s  | 9.61 MB/s  |
+| IPC Calls          | 43         | 23         | 16         |
+| Total Overhead     | 2.08 s (39%)| 1.24 s (28%)| 0.92 s (22%)|
+| Hash Compute Time  | 3.253 s    | 3.253 s    | 3.251 s    |
+| Host Memory Peak   | 2400 KB    | 3384 KB    | 4396 KB    |
+
+
+we can observe that by increasing the chunk size , the total time is getting reduced and also the total overhead is reduced.
+if there are more IPC calls , then the overhead is becoming more. so whenever an IPC call is made , that requires extra setup in the secure world , which leads to overhead.
+we can observe that the hash compute time is almost same in all the cases.

@@ -24,10 +24,18 @@
 #define CMD_HASH_UPDATE             5  // New command to update with a chunk
 #define CMD_HASH_FINAL              6  // New command to finalize and get the hash
 
-/* Maximum file size for single-shot hashing (4MB) */
-#define MAX_SINGLE_SHOT_SIZE        (4 * 1024 * 1024)
-/* Chunk size for streaming (1MB for better performance vs memory tradeoff) */
-#define CHUNK_SIZE                  (1 * 1024 * 1024)
+/* File size options (1-4 MB) */
+#define SIZE_1MB    (1 * 1024 * 1024)
+#define SIZE_2MB    (2 * 1024 * 1024)
+#define SIZE_3MB    (3 * 1024 * 1024)
+#define SIZE_4MB    (4 * 1024 * 1024)
+
+/* Chunk sizes options for streaming */
+#define CHUNK_SIZE_1MB    (1 * 1024 * 1024)
+#define CHUNK_SIZE_2MB    (2 * 1024 * 1024)
+#define CHUNK_SIZE_3MB    (3 * 1024 * 1024)
+#define CHUNK_SIZE_4MB    (4 * 1024 * 1024)
+
 /* Maximum total file size (1GB) */
 #define MAX_TOTAL_FILE_SIZE         (1024 * 1024 * 1024)
 
@@ -53,6 +61,45 @@ typedef struct {
     uint64_t wait_time_total;
     uint64_t io_read_time_us;
 } performance_stats_t;
+
+static void print_usage(const char *program_name) {
+    printf("Usage: %s [options] <file_to_hash> [file2] [file3] ...\n", program_name);
+    printf("\nOptions:\n");
+    printf("  -s <size>   Set single-shot size limit (1-4):\n");
+    printf("              1 = 1MB, 2 = 2MB, 3 = 3MB, 4 = 4MB\n");
+    printf("              Default: 4MB\n");
+    printf("  -c <size>   Set chunk size for chunked method (1-4 MB)\n");
+    printf("              Default: 1MB\n");
+    printf("  -h          Show this help message\n");
+    printf("\nExamples:\n");
+    printf("  %s -s 2 -c 3 /boot/config.txt  # Use 2MB single-shot limit, 3MB chunk size\n", program_name);
+    printf("  %s /boot/config.txt            # Use default limits\n", program_name);
+    printf("\nNote: Files larger than the single-shot limit will be processed in chunks\n");
+}
+
+static size_t parse_size_option(const char *size_str) {
+    int size_option = atoi(size_str);
+    
+    switch (size_option) {
+        case 1: return SIZE_1MB;
+        case 2: return SIZE_2MB;
+        case 3: return SIZE_3MB;
+        case 4: return SIZE_4MB;
+        default:
+            fprintf(stderr, "Invalid size option: %s. Must be 1, 2, 3, or 4\n", size_str);
+            return 0;
+    }
+}
+
+static const char* get_size_string(size_t size) {
+    switch (size) {
+        case SIZE_1MB: return "1MB";
+        case SIZE_2MB: return "2MB";
+        case SIZE_3MB: return "3MB";
+        case SIZE_4MB: return "4MB";
+        default: return "Unknown";
+    }
+}
 
 static TEEC_Result initialize_tee_context(TEEC_Context *ctx, TEEC_Session *sess) {
     TEEC_UUID svc_id = TA_SECURE_HASH_UUID;
@@ -234,7 +281,8 @@ static TEEC_Result hash_file_single_shot(TEEC_Session *sess, const char *filenam
 /* New chunked hash function for large files */
 static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
                                      uint8_t *hash_output, size_t *hash_len,
-                                     performance_stats_t *perf_stats) {
+                                     performance_stats_t *perf_stats,
+                                     size_t chunksize) {
     TEEC_Operation op;
     TEEC_Result res;
     uint32_t err_origin;
@@ -267,11 +315,11 @@ static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
         return TEEC_ERROR_OUT_OF_MEMORY;
     }
 
-    printf("File size: %zu bytes, will process in chunks of %d bytes\n", 
-           file_size, CHUNK_SIZE);
+    printf("File size: %zu bytes, will process in chunks of %zu bytes\n", 
+           file_size, chunksize);
 
     /* Allocate chunk buffer */
-    chunk_buffer = malloc(CHUNK_SIZE);
+    chunk_buffer = malloc(chunksize);
     if (!chunk_buffer) {
         fprintf(stderr, "Failed to allocate chunk buffer\n");
         fclose(file);
@@ -299,8 +347,8 @@ static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
     /* Step 2: Process file in chunks */
     size_t chunks_processed = 0;
     while (total_read < file_size) {
-        size_t to_read = (file_size - total_read > CHUNK_SIZE) ? 
-                         CHUNK_SIZE : (file_size - total_read);
+        size_t to_read = (file_size - total_read > chunksize) ? 
+                         chunksize : (file_size - total_read);
 
         /* Read chunk with I/O timing */
         io_start_time = get_time_us();
@@ -381,7 +429,9 @@ static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
 /* Main hash function that chooses between single-shot and chunked */
 static TEEC_Result hash_file_secure(TEEC_Session *sess, const char *filename,
                                    uint8_t *hash_output, size_t *hash_len,
-                                   performance_stats_t *perf_stats) {
+                                   performance_stats_t *perf_stats,
+                                   size_t single_shot_limit,
+                                   size_t chunksize) {
     struct stat file_stat;
     
     /* Get file information */
@@ -395,10 +445,10 @@ static TEEC_Result hash_file_secure(TEEC_Session *sess, const char *filename,
     printf("File size: %zu bytes\n", file_size);
 
     /* Choose hashing method based on file size */
-    if (file_size <= MAX_SINGLE_SHOT_SIZE) {
+    if (file_size <= single_shot_limit) {
         return hash_file_single_shot(sess, filename, hash_output, hash_len, perf_stats);
     } else {
-        return hash_file_chunked(sess, filename, hash_output, hash_len, perf_stats);
+        return hash_file_chunked(sess, filename, hash_output, hash_len, perf_stats, chunksize);
     }
 }
 
@@ -428,8 +478,9 @@ static TEEC_Result get_ta_performance_stats(TEEC_Session *sess,
 
 static void print_performance_report(performance_stats_t *host_stats,
                                    performance_stats_t *ta_stats,
-                                   const char *method) {
-    printf("\n=== PERFORMANCE ANALYSIS REPORT (%s) ===\n", method);
+                                   const char *method,
+                                   size_t file_size_bytes) {
+    printf("\n=== ENHANCED PERFORMANCE ANALYSIS REPORT (%s) ===\n", method);
     
     printf("\n--- Host Application Stats ---\n");
     printf("File Read I/O Time: %lu us\n", host_stats->io_read_time_us);
@@ -455,25 +506,63 @@ static void print_performance_report(performance_stats_t *host_stats,
     printf("REE Time Delta: %lu us\n", 
            ta_stats->ree_time_end - ta_stats->ree_time_start);
     
-    printf("\n--- Performance Metrics ---\n");
+    printf("\n--- Enhanced Performance Metrics ---\n");
+    
+    // File size in MB for calculations
+    double file_size_mb = (double)file_size_bytes / (1024.0 * 1024.0);
+    
+    // Memory efficiency per MB processed
+    if (file_size_mb > 0 && ta_stats->tee_stack_usage > 0) {
+        double memory_efficiency = (double)ta_stats->tee_stack_usage / file_size_mb;
+        printf("Memory Efficiency (Peak TA Memory/Input Size): %.2f bytes per MB processed\n", 
+               memory_efficiency);
+    }
+    
+    // Total overhead calculation
+    uint64_t secure_world_time = ta_stats->tee_time_end - ta_stats->tee_time_start;
+    uint64_t hash_compute_time_us = ta_stats->hash_compute_time / 1000;
+    uint64_t total_overhead = 0;
+    
+    if (secure_world_time > hash_compute_time_us) {
+        total_overhead = secure_world_time - hash_compute_time_us;
+    }
+    
+    printf("Total Secure World Time: %lu us\n", secure_world_time);
+    printf("Pure Hash Compute Time: %lu us\n", hash_compute_time_us);
+    printf("Total Overhead: %lu us (%.2f%% of secure world time)\n", 
+           total_overhead, 
+           secure_world_time > 0 ? (double)total_overhead / secure_world_time * 100.0 : 0.0);
+    
+    // Latency per IPC call
+    if (ta_stats->ipc_calls > 0) {
+        double ipc_latency = (double)host_stats->io_time_us / ta_stats->ipc_calls;
+        printf("Average Latency per IPC Call: %.2f us\n", ipc_latency);
+    }
+    
     printf("Average time per hash operation: %.2f us\n", 
            ta_stats->hash_operations > 0 ? 
            (double)host_stats->io_time_us / ta_stats->hash_operations : 0.0);
-    
-    if (ta_stats->ipc_calls > 0) {
-        printf("Average IPC latency: %.2f us\n", 
-               (double)host_stats->io_time_us / ta_stats->ipc_calls);
-    }
     
     printf("CPU Utilization: %.2f%%\n",
            host_stats->io_time_us > 0 ?
            (double)host_stats->cpu_time_us / host_stats->io_time_us * 100.0 : 0.0);
     
     printf("I/O vs Compute Time Ratio: %.2f:1\n",
-           ta_stats->hash_compute_time > 0 ?
-           (double)host_stats->io_read_time_us / (ta_stats->hash_compute_time/1000) : 0.0);
+           hash_compute_time_us > 0 ?
+           (double)host_stats->io_read_time_us / hash_compute_time_us : 0.0);
     
-    printf("\n=== END REPORT ===\n");
+    // Throughput calculations
+    if (host_stats->io_time_us > 0) {
+        double throughput_mbps = file_size_mb / ((double)host_stats->io_time_us / 1000000.0);
+        printf("Overall Throughput: %.2f MB/s\n", throughput_mbps);
+    }
+    
+    if (hash_compute_time_us > 0) {
+        double hash_throughput = file_size_mb / ((double)hash_compute_time_us / 1000000.0);
+        printf("Hash Compute Throughput: %.2f MB/s\n", hash_throughput);
+    }
+    
+    printf("\n=== END ENHANCED REPORT ===\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -484,19 +573,56 @@ int main(int argc, char *argv[]) {
     size_t hash_len = sizeof(hash_output);
     performance_stats_t host_stats = {0};
     performance_stats_t ta_stats = {0};
+    size_t single_shot_limit = SIZE_4MB; /* Default to 4MB */
+    size_t chunk_size = CHUNK_SIZE_1MB;  /* Default to 1MB */
+    int file_start_index = 1;
 
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <file_to_hash> [file2] [file3] ...\n", argv[0]);
-        fprintf(stderr, "Example: %s /boot/config.txt /boot/cmdline.txt\n", argv[0]);
-        fprintf(stderr, "Note: Files > %d bytes will be processed in chunks\n", 
-                MAX_SINGLE_SHOT_SIZE);
+    /* Parse command line options */
+    int opt;
+    while ((opt = getopt(argc, argv, "s:c:h")) != -1) {
+        switch (opt) {
+            case 's': {
+                size_t new_limit = parse_size_option(optarg);
+                if (new_limit == 0) {
+                    return 1;
+                }
+                single_shot_limit = new_limit;
+                break;
+            }
+            case 'c': {
+                int cs = atoi(optarg);
+                switch (cs) {
+                    case 1: chunk_size = CHUNK_SIZE_1MB; break;
+                    case 2: chunk_size = CHUNK_SIZE_2MB; break;
+                    case 3: chunk_size = CHUNK_SIZE_3MB; break;
+                    case 4: chunk_size = CHUNK_SIZE_4MB; break;
+                    default:
+                        fprintf(stderr, "Invalid chunk size: %s. Must be 1, 2, 3, or 4\n", optarg);
+                        return 1;
+                }
+                break;
+            }
+            case 'h':
+                print_usage(argv[0]);
+                return 0;
+            default:
+                print_usage(argv[0]);
+                return 1;
+        }
+    }
+
+    file_start_index = optind;
+
+    if (file_start_index >= argc) {
+        fprintf(stderr, "Error: No files specified\n\n");
+        print_usage(argv[0]);
         return 1;
     }
 
-    printf("Secure Hash Computation with Performance Monitoring\n");
-    printf("===================================================\n");
-    printf("Single-shot limit: %d bytes, Chunk size: %d bytes\n", 
-           MAX_SINGLE_SHOT_SIZE, CHUNK_SIZE);
+    printf("Secure Hash Computation with Enhanced Performance Monitoring\n");
+    printf("============================================================\n");
+    printf("Single-shot limit: %s, Chunk size: %zu KB\n", 
+           get_size_string(single_shot_limit), chunk_size / 1024);
 
     /* Initialize TEE context */
     res = initialize_tee_context(&ctx, &sess);
@@ -505,9 +631,16 @@ int main(int argc, char *argv[]) {
     }
 
     /* Process each file */
-    for (int i = 1; i < argc; i++) {
+    for (int i = file_start_index; i < argc; i++) {
         printf("\nProcessing file: %s\n", argv[i]);
         printf("----------------------------------------\n");
+        
+        /* Get file size for stats */
+        struct stat file_stat;
+        size_t file_size = 0;
+        if (stat(argv[i], &file_stat) == 0) {
+            file_size = file_stat.st_size;
+        }
         
         /* Reset hash length and stats for each file */
         hash_len = sizeof(hash_output);
@@ -515,7 +648,8 @@ int main(int argc, char *argv[]) {
         memset(&ta_stats, 0, sizeof(ta_stats));
         
         /* Compute hash with appropriate method */
-        res = hash_file_secure(&sess, argv[i], hash_output, &hash_len, &host_stats);
+        res = hash_file_secure(&sess, argv[i], hash_output, &hash_len, 
+                              &host_stats, single_shot_limit, chunk_size);
         
         if (res != TEEC_SUCCESS) {
             fprintf(stderr, "Failed to hash file: %s\n", argv[i]);
@@ -525,13 +659,9 @@ int main(int argc, char *argv[]) {
         /* Get TA performance statistics */
         res = get_ta_performance_stats(&sess, &ta_stats);
         if (res == TEEC_SUCCESS) {
-            struct stat file_stat;
-            const char *method = "Unknown";
-            if (stat(argv[i], &file_stat) == 0) {
-                method = (file_stat.st_size <= MAX_SINGLE_SHOT_SIZE) ? 
-                         "Single-shot" : "Chunked";
-            }
-            print_performance_report(&host_stats, &ta_stats, method);
+            const char *method = (file_size <= single_shot_limit) ? 
+                                 "Single-shot" : "Chunked";
+            print_performance_report(&host_stats, &ta_stats, method, file_size);
         }
     }
 
@@ -541,3 +671,4 @@ int main(int argc, char *argv[]) {
     printf("\nSecure hash computation completed.\n");
     return 0;
 }
+
