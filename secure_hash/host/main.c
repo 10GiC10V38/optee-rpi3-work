@@ -23,6 +23,7 @@
 #define CMD_HASH_INIT               4  // New command to start a hash operation
 #define CMD_HASH_UPDATE             5  // New command to update with a chunk
 #define CMD_HASH_FINAL              6  // New command to finalize and get the hash
+#define CMD_BENCHMARK_NOOP          7  // New command for baseline overhead
 
 /* File size options (1-4 MB) */
 #define SIZE_1MB    (1 * 1024 * 1024)
@@ -565,6 +566,49 @@ static void print_performance_report(performance_stats_t *host_stats,
     printf("\n=== END ENHANCED REPORT ===\n");
 }
 
+
+static void run_noop_benchmark(TEEC_Session *sess) {
+    TEEC_Operation op;
+    TEEC_Result res;
+    uint32_t err_origin;
+    uint64_t total_time_us = 0;
+    const int iterations = 100; // Run the test many times to get a stable average
+
+    printf("\nRunning NOOP Benchmark...\n");
+    printf("----------------------------------------\n");
+
+    /* 1. Perform one "warm-up" call to handle the first-call penalty */
+    memset(&op, 0, sizeof(op));
+    op.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
+    res = TEEC_InvokeCommand(sess, CMD_BENCHMARK_NOOP, &op, &err_origin);
+    if (res != TEEC_SUCCESS) {
+        fprintf(stderr, "Warm-up call failed: 0x%x\n", res);
+        return;
+    }
+    printf("Warm-up call complete. Starting benchmark for %d iterations...\n", iterations);
+
+    /* 2. Now, loop and measure the subsequent calls */
+    for (int i = 0; i < iterations; i++) {
+        uint64_t start_time = get_time_us(); // Use a simpler timer for this tight loop
+
+        res = TEEC_InvokeCommand(sess, CMD_BENCHMARK_NOOP, &op, &err_origin);
+        
+        uint64_t end_time = get_time_us();
+        total_time_us += (end_time - start_time);
+
+        if (res != TEEC_SUCCESS) {
+            fprintf(stderr, "NOOP Benchmark failed during loop: 0x%x\n", res);
+            return;
+        }
+    }
+
+    /* 3. Calculate and print the average */
+    double avg_time_us = (double)total_time_us / iterations;
+    printf("\n--- NOOP Benchmark Results ---\n");
+    printf("Total time for %d calls: %lu us\n", iterations, total_time_us);
+    printf("Average round-trip IPC latency: %.2f us (%.4f ms)\n", avg_time_us, avg_time_us / 1000.0);
+}
+
 int main(int argc, char *argv[]) {
     TEEC_Context ctx;
     TEEC_Session sess;
@@ -577,6 +621,17 @@ int main(int argc, char *argv[]) {
     size_t chunk_size = CHUNK_SIZE_1MB;  /* Default to 1MB */
     int file_start_index = 1;
 
+        /* NEW: Check for benchmark flag */
+    if (argc == 2 && strcmp(argv[1], "--benchmark-noop") == 0) {
+        res = initialize_tee_context(&ctx, &sess);
+        if (res != TEEC_SUCCESS) return 1;
+
+        run_noop_benchmark(&sess);
+
+        cleanup_tee_context(&ctx, &sess);
+        return 0;
+    }
+    
     /* Parse command line options */
     int opt;
     while ((opt = getopt(argc, argv, "s:c:h")) != -1) {

@@ -14,6 +14,7 @@
 #define CMD_HASH_INIT               4 // New command to start a hash operation
 #define CMD_HASH_UPDATE             5 // New command to update with a chunk
 #define CMD_HASH_FINAL              6 // New command to finalize and get the hash
+#define CMD_BENCHMARK_NOOP          7 // New command for baseline overhead
 
 /* Performance monitoring structure */
 typedef struct {
@@ -123,6 +124,13 @@ static void log_memory_checkpoint(const char* operation) {
     DMSG("Memory checkpoint [%s]: Stack usage = %lu bytes", 
          operation, g_perf_stats.tee_stack_usage);
 }
+
+/* for testing with basic functionality */
+static TEE_Result benchmark_noop(void) {
+   // g_perf_stats.ipc_calls++; // Still count it as an IPC call
+    return TEE_SUCCESS;
+}
+
 
 /*
  * STREAMING HASH FUNCTIONS
@@ -569,6 +577,9 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sess_ctx,
         DMSG("Secure Hash TA: Resetting performance counters");
         return reset_performance_counters(param_types, params);
         
+    case CMD_BENCHMARK_NOOP:
+        DMSG("Calling basic functionality");
+        return benchmark_noop();
     default:
         EMSG("Command ID 0x%x is not supported", cmd_id);
         return TEE_ERROR_NOT_SUPPORTED;
