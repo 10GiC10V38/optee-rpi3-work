@@ -10,7 +10,7 @@ try to collect data from multiple file sizes and multiple chunk sizes and do ana
 
 make documentation even more clearer.
 
-build the OPTEE by linking openssl to the TA
+
 
 and add the perf tool for performance measurement.
 
@@ -18,3 +18,13 @@ and add the perf tool for performance measurement.
 
 go through this:
 https://optee.readthedocs.io/en/3.13.0/debug/benchmark.html
+
+
+
+
+build the OPTEE by linking openssl to the TA
+
+update the calculations in the ta.c  like the number of hash opertaions , secure storage accesse etc..
+and try to see by removing all the debug print statements.
+
+

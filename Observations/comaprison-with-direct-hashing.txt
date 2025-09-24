@@ -111,3 +111,19 @@ whereas in TA , pure hash time itself is 3.2s.
 need to check if the debug statements are increasing the time.
 
 but the difference of this time here could be of various reasons like the libraries used in both the cases and also Hardware part.
+
+to get better comparison and use as baseline for hash computation , implementing own sha-256 functionality in the host application might be very slow as the standard libraries will use lot of optimizations.
+so need to try and use openssl library.
+
+in rpi3:
+
+# find /usr/lib /lib -name "libcrypto.so*"
+/usr/lib/libcrypto.so.1.1
+/usr/lib/libcrypto.so
+# openssl version
+-sh: openssl: not found
+# openssl
+-sh: openssl: not found
+
+
+this confirms that the crypto libraries are already present.
