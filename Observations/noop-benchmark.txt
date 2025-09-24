@@ -1,0 +1,37 @@
+# optee_example_secure_hash --benchmark-noop
+D/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+D/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40075000
+D/TA:  TA_CreateEntryPoint:458 Secure Hash TA: Creating entry point with enhanced monitoring
+I/TA: TA initialized with stack base at: 0x400186b0
+D/TA:  TA_OpenSessionEntryPoint:491 Secure Hash TA: Opening session with enhanced tracking
+I/TA: Secure Hash TA session opened successfully
+I/TA: Session context allocated at: 0x400ad5c0
+I/TA: Session stack base: 0x400186b0
+
+Running D/TA:  TA_InvokeCommandEntryPoint:558 Command invoked: 7
+NOOP Benchmark..D/TA:  TA_InvokeCommandEntryPoint:582 Calling basic functionality
+.
+-------------D/TA:  benchmark_noop:131 Benchmark NOOP command executed.
+----------------D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+--------D/TC:? 0 tee_ta_close_session:529 Destroy session
+---
+NOOI/TA: Session closing stats:
+P Benchmark succI/TA:   Session duration: 47000 us
+essful.
+Total tI/TA:   Total bytes processed: 0
+ime for a singleI/TA:   Operation active: No
+ round-trip IPC I/TA: Secure Hash TA session closed
+call: 20549 us (D/TA:  TA_DestroyEntryPoint:475 Secure Hash TA: Destroying entry point
+20.55 ms)
+I/TA: Final stats - Max stack usage: 0 bytes, Total hash ops: 0
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+# 
+

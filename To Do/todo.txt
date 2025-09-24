@@ -13,3 +13,8 @@ make documentation even more clearer.
 build the OPTEE by linking openssl to the TA
 
 and add the perf tool for performance measurement.
+
+
+
+go through this:
+https://optee.readthedocs.io/en/3.13.0/debug/benchmark.html

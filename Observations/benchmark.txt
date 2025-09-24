@@ -1,0 +1,45 @@
+trying to use the availabe benchmark framework to accurately calculate the timings.
+
+url: (check if this is the latest one ).
+https://optee.readthedocs.io/en/3.13.0/debug/benchmark.html
+
+inside the build , did
+make CFG_TEE_BENCHMARK=y
+
+and flashed the OPTEE-OS to rpi3 ,but when trying to use the benchmark , getting errors because of no allocation of memory.
+
+# benchmark /usr/bin/optee_example_secure_hash optee_example_secure_
+optee_example_secure_hash     optee_example_secure_storage
+# benchmark /usr/bin/optee_example_secure_hash /usr/bin/optee_example_secure_has
+h
+[BenchmaD/TC:? 0 tee_ta_init_session_with_context:605 Re-open TA 0b9a63b0-b4c6-4c85-a284-a228ef547b4e
+rk] INFO: 1. OpeD/TC:? 0 tee_ta_init_session_with_context:605 Re-open TA 0b9a63b0-b4c6-4c85-a284-a228ef547b4e
+ning BenD/TC:? 0 get_benchmark_memref:120 Benchmark: Sending back timestamp buffer paddr = 0x0
+chmark SD/TC:? 0 tee_ta_close_session:510 csess 0x1018a7f0 id 2
+tatic TAD/TC:? 0 tee_ta_close_session:529 Destroy session
+...
+[BeE/TC:? 0 get_rpc_alloc_res:645 RPC allocation failed. Non-secure world result: ret=0xffff0006 ret_origin=0x2
+nchmark]E/TC:? 0 alloc_benchmark_buffer:72 Benchmark: can't create mobj for timestamp buffer
+ INFO: 2D/TC:? 0 tee_ta_invoke_command:821 Error: ffff000c of 4
+. AllocaD/TC:? 0 tee_ta_init_session_with_context:605 Re-open TA 0b9a63b0-b4c6-4c85-a284-a228ef547b4e
+ting perD/TC:? 0 get_benchmark_memref:120 Benchmark: Sending back timestamp buffer paddr = 0x0
+-core buD/TC:? 0 tee_ta_close_session:510 csess 0x1018a7f0 id 2
+ffers, cD/TC:? 0 tee_ta_close_session:529 Destroy session
+ores detected = D/TC:? 0 tee_ta_close_session:510 csess 0x1018a8a0 id 1
+4
+[BencD/TC:? 0 tee_ta_close_session:529 Destroy session
+hmark] ERROR: TEEC_InvokeCommand: 0xffff000c
+
+# 
+
+
+
+again 
+did 
+make clean
+and then 
+make CFG_TEE_BENCHMARK=y
+
+even after doing this same issue.
+
+

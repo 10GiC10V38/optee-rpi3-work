@@ -23,4 +23,10 @@ when to use what? whether working directly with physical address or with virtual
 right now it is assumed that GPS (or any sensor) data is going to be passed through the shared memory to the ta from normal world. so calculating the hash by sending the data in chunks.
 
 
+24-09-2025
+
+inorder to calculate the exact no.of blocks hashed , like setup time , should i implement the SHA-256 separately?
+like instead of using API and existing libraries?
+
+
 

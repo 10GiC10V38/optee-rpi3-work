@@ -1,0 +1,113 @@
+implemented sha-256 on the rpi3 directly by using
+
+time sha256sum <file>
+
+D/TA:  TA_InvokeCommandEntryPoint:558 Command invoked: 5
+D/TA:  TA_InvokeCommandEntryPoint:565 Secure Hash TA: Updating hash with chunk
+D/TA:  log_memory_checkpoint:124 Memory checkpoint [hash_update_start]: Stack usage = 112 bytes
+D/TA:  log_memory_checkpoint:124 Memory checkpoint [hash_update_end]: Stack usage = 112 bytes
+D/TA:  hash_update:212 Updated stream hash with 879445 bytes. Total processed: 42822485 bytes. Update time: 67000000 ns
+ProcesseD/TA:  TA_InvokeCommandEntryPoint:558 Command invoked: 6
+d 42822485/42822D/TA:  TA_InvokeCommandEntryPoint:568 Secure Hash TA: Finalizing hash
+485 bytes (100.0D/TA:  log_memory_checkpoint:124 Memory checkpoint [hash_final_start]: Stack usage = 112 bytes
+%) - 41 chunks
+D/TA:  log_memory_checkpoint:124 Memory checkpoint [hash_final_before_cleanup]: Stack usage = 112 bytes
+D/TA:  log_memory_checkpoint:124 Memory checkpoint [hash_final_end]: Stack usage = 112 bytes
+I/TA: Streaming hash computed successfully.
+I/TA: Enhanced timing details:
+I/TA:   Total TEE session time: 5369000 us
+I/TA:   Hash finalization time: 0 ns
+I/TA:   Total hash compute time: 3256000 us
+I/TA:   Total bytes processed: 42822485
+I/TA:   Peak stack usage: 112 bytes
+I/TA:   REE time delta: 5369000 us
+Chunked hash computed suD/TA:  TA_InvokeCommandEntryPoint:558 Command invoked: 2
+ccessfully (32 bD/TA:  TA_InvokeCommandEntryPoint:574 Secure Hash TA: Getting performance stats
+ytes) from 41 chI/TA: Performance stats retrieved:
+unks
+Hash: 1b8aI/TA:   IPC calls: 43
+78075bdac18361ffI/TA:   RPC count: 1
+be3b494b8095a4f6I/TA:   Hash operations: 1
+4a2b95d18c5554bdI/TA:   Peak stack usage: 112 bytes
+588c84190621
+I/TA:   Total hash compute time: 3256000 us
+
+=== ENHANCED PERFORMANCED/TC:? 0 tee_ta_close_session:510 csess 0x1018aa00 id 1
+ ANALYSID/TC:? 0 tee_ta_close_session:529 Destroy session
+S REPORTI/TA: Session closing stats:
+ (Chunked) ===
+I/TA:   Session duration: 5476000 us
+
+--- Host AppliI/TA:   Total bytes processed: 42822485
+cation Stats ---I/TA:   Operation active: No
+
+File Read I/O I/TA: Secure Hash TA session closed
+D/TA:  TA_DestroyEntryPoint:475 Secure Hash TA: Destroying entry point
+
+Context SwitcheI/TA: Final stats - Max stack usage: 112 bytes, Total hash ops: 1
+s: 232
+VoluntarD/TC:? 0 destroy_context:307 Destroy TA ctx (0x1018a9a0)
+y Context Switches: 0
+Involuntary Context Switches: 232
+Total Time: 5445759 us
+CPU Time: 5430475 us (99.72%)
+Memory Peak: 2308 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 43
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 112 bytes
+Hash Operations: 1
+Hash Compute Time: 3256000 us
+TEE Time Delta: 5368000 us
+REE Time Delta: 5369000 us
+
+--- Enhanced Performance Metrics ---
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+Total Secure World Time: 5368000 us
+Pure Hash Compute Time: 3256000 us
+Total Overhead: 2112000 us (39.34% of secure world time)
+Average Latency per IPC Call: 126645.56 us
+Average time per hash operation: 5445759.00 us
+CPU Utilization: 99.72%
+I/O vs Compute Time Ratio: 0.03:1
+Overall Throughput: 7.50 MB/s
+Hash Compute Throughput: 12.54 MB/s
+
+=== END ENHANCED REPORT ===
+
+Secure hash computation completed.
+# time sha256sum 40MB-TESTFILE.ORG.pdf 
+1b8a78075bdac18361ffbe3b494b8095a4f64a2b95d18c5554bd588c84190621  40MB-TESTFILE.ORG.pdf
+real	0m 2.70s
+user	0m 2.56s
+sys	0m 0.13s
+# time sha256sum 40MB-TESTFILE.ORG.pdf 
+1b8a78075bdac18361ffbe3b494b8095a4f64a2b95d18c5554bd588c84190621  40MB-TESTFILE.ORG.pdf
+real	0m 2.70s
+user	0m 2.58s
+sys	0m 0.10s
+# 
+
+--From the OPTEE--
+Hash: 1b8aI/TA:   IPC calls: 43
+78075bdac18361ffI/TA:   RPC count: 1
+be3b494b8095a4f6I/TA:   Hash operations: 1
+4a2b95d18c5554bdI/TA:   Peak stack usage: 112 bytes
+588c84190621
+
+
+
+
+we can see that the hash value is same in both cases which confirms same file is being used and same hashing is used.
+
+
+
+but we can see the differene in the time for the hash computations.
+like in the case of direct calculation , incuding I/O it is taking only 2.7s 
+whereas in TA , pure hash time itself is 3.2s.
+
+need to check if the debug statements are increasing the time.
+
+but the difference of this time here could be of various reasons like the libraries used in both the cases and also Hardware part.
