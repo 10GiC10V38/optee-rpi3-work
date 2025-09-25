@@ -12,7 +12,7 @@ make documentation even more clearer.
 
 
 
-and add the perf tool for performance measurement.
+
 
 
 
@@ -21,10 +21,19 @@ https://optee.readthedocs.io/en/3.13.0/debug/benchmark.html
 
 
 
+current:
 
+add the perf tool for performance measurement.
 build the OPTEE by linking openssl to the TA
-
-update the calculations in the ta.c  like the number of hash opertaions , secure storage accesse etc..
+update the calculations in the ta.c  like the number of hash opertaions , secure storage accesses etc..
 and try to see by removing all the debug print statements.
+try and use ARM cycle counters and also see about the Performance Monitoring Unit (PMU) in rpi3 and how that can be used in normal os and secure os.
+need to finalize how hash operations are to be calculated.
+
+memory utilization
+cpu utilization
+stack utilization
+
+
 
 

@@ -74,7 +74,45 @@ got nearly 12.3 ms
  BenchmaD/TC:? 0 tee_ta_close_session:529 Destroy session
 rk ResulI/TA: Session closing stats:
 ts ---
-Total tiI/TA:   Session duration: 1271000 us
+Total tiI/TA:   Session
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 82443 us
+Context Switches: 130
+Voluntary Context Switches: 0
+Involuntary Context Switches: 130
+Total Time: 3785648 us
+CPU Time: 3779137 us (99.83%)
+Memory Peak: 4344 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 16
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 112 bytes
+Hash Operations: 1
+Hash Compute Time: 3246000 us
+TEE Time Delta: 3766000 us
+REE Time Delta: 3767000 us
+
+--- Enhanced Performance Metrics ---
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+Total Time: 3785648 us
+Pure Hash Compute Time: 3246000 us
+Total Overhead: 457205 us (12.08% of total time)
+Average Latency per IPC Call: 236603.00 us
+Average time per hash operation: 3785648.00 us
+CPU Utilization: 99.83%
+I/O vs Compute Time Ratio: 0.03:1
+Overall Throughput: 10.79 MB/s
+Hash Compute Throughput: 12.58 MB/s
+
+=== END ENHANCED REPORT ===
+
+Secure hash computation completed.
+# 
+ duration: 1271000 us
 me for 100 callsI/TA:   Total bytes processed: 0
 : 1231030 us
 AvI/TA:   Operation active: No
@@ -113,3 +151,86 @@ D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
 
 
 
+
+these are the stats with hash computation.
+
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 82443 us
+Context Switches: 130
+Voluntary Context Switches: 0
+Involuntary Context Switches: 130
+Total Time: 3785648 us
+CPU Time: 3779137 us (99.83%)
+Memory Peak: 4344 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 16
+RPC Count: 1
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 82443 us
+Context Switches: 130
+Voluntary Context Switches: 0
+Involuntary Context Switches: 130
+Total Time: 3785648 us
+CPU Time: 3779137 us (99.83%)
+Memory Peak: 4344 KB
+
+--- Trusted Application Stats ---
+IPC Calls: 16
+RPC Count: 1
+Secure Storage Access: 1
+TEE Stack Usage: 112 bytes
+Hash Operations: 1
+Hash Compute Time: 3246000 us
+TEE Time Delta: 3766000 us
+REE Time Delta: 3767000 us
+
+--- Enhanced Performance Metrics ---
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+Total Time: 3785648 us
+Pure Hash Compute Time: 3246000 us
+Total Overhead: 457205 us (12.08% of total time)
+Average Latency per IPC Call: 236603.00 us
+Average time per hash operation: 3785648.00 us
+CPU Utilization: 99.83%
+I/O vs Compute Time Ratio: 0.03:1
+Overall Throughput: 10.79 MB/s
+Hash Compute Throughput: 12.58 MB/s
+
+=== END ENHANCED REPORT ===
+
+Secure hash computation completed.
+# 
+
+Secure Storage Access: 1
+TEE Stack Usage: 112 bytes
+Hash Operations: 1
+Hash Compute Time: 3246000 us
+TEE Time Delta: 3766000 us
+REE Time Delta: 3767000 us
+
+--- Enhanced Performance Metrics ---
+Memory Efficiency (Peak TA Memory/Input Size): 2.74 bytes per MB processed
+Total Time: 3785648 us
+Pure Hash Compute Time: 3246000 us
+Total Overhead: 457205 us (12.08% of total time)
+Average Latency per IPC Call: 236603.00 us
+Average time per hash operation: 3785648.00 us
+CPU Utilization: 99.83%
+I/O vs Compute Time Ratio: 0.03:1
+Overall Throughput: 10.79 MB/s
+Hash Compute Throughput: 12.58 MB/s
+
+=== END ENHANCED REPORT ===
+
+Secure hash computation completed.
+# 
+
+
+here we can observe that avg latency is around 457 ms.
+whereas in case of noop it was around 18 ms.
