@@ -1,0 +1,30 @@
+
+A TA runs in user mode inside Secure World.
+
+Therefore, the sp here refers to the user-mode TA stack — i.e., the TA stack defined in user_ta_header_defines.h (2KB default).
+
+When you call functions like TEE_DigestDoFinal() or TEE_CipherUpdate() inside your Trusted Application:
+
+The TA is running in user mode inside Secure World.
+
+Those API calls (the GP TEE Internal Core API) are implemented in libutee (a user-space library for TAs).
+
+That means they use our TA user stack (default 2KB, configurable).
+
+
+there are different stacks.
+we saw that the memory organization was like
+TA_RAM - 16MB here is where our trusted applications run.
+the stack size for  our ta is defined in the user_ta_header_defines.h which is present in the TA folder of our TA.(default value is 2KB).
+
+we can increase this size , but it depends on the other memory utilizations like for code , data , heap etc within the program..
+total memory we have is 16MB in our case. and for the secure_hash_TA , we are using 16KB of stack_size.
+and we have defined 128 KB of heap size. this is for one program.
+
+
+
+TEE_RAM - 4MB here is where the core os of the TEE runs , this has a different stack size ( 8 KB ).
+and then 4 MB for the shared memory.
+
+
+
