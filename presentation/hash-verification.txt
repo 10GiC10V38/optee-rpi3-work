@@ -1,0 +1,8 @@
+# time sha256sum 100MB-TESTFILE.ORG.pdf 
+e95ce4146e3ffe7d5fde36340c01889f7634d6f91b92fbae1606bef9cb4a7cfb  100MB-TESTFILE.ORG.pdf
+real	0m 6.83s
+user	0m 6.46s
+sys	0m 0.35s
+# 
+
+

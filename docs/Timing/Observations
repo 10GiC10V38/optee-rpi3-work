@@ -186,47 +186,22 @@ Context Switches (vol/invol)
 
 Observations:
 CPU Time is stable (~285,000 µs for 3.2 MB) across runs.
-
-
 Indicates that the actual work done by the host + Secure World is consistent.
-
-
 CPU time measures only the time the process actually had the CPU.
-
-
 Total/Wall Time varies depending on system load.
-
-
 Higher background load → more involuntary context switches → longer total time.
-
-
 Involuntary context switches increase as background processes run.
-
-
 Voluntary switches remain 0 → host process never yields CPU itself.
 
-
 CPU Utilization decreases as more processes compete for CPU, despite same actual compute work.
-
-
 
 3. Key Insights
 3.1 World Switch vs Context Switch
 World switch (Normal → Secure World via SMC)
-
-
 Lightweight: saves minimal CPU state (registers, PC, SPSR)
-
-
 Happens each TEEC_InvokeCommand()
-
-
 Minimal overhead (few microseconds on Cortex-A53)
-
-
 Linux Context Switch
-
-
 Happens when Linux scheduler preempts a process
 
 

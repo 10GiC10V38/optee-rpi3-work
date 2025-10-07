@@ -3,3 +3,271 @@ https://petsymposium.org/popets/2024/popets-2024-0039.pdf
 
 pd-ros part section-4:
 https://gemini.google.com/app/24e47d49a01f345a
+
+
+
+
+import sys
+import argparse
+from pathlib import Path
+
+# Import m5 FIRST before any gem5 components
+import m5
+from m5.objects import *
+
+# Parse arguments FIRST to get output directory
+parser = argparse.ArgumentParser(description="OoO & speculation assignment runner - Enhanced")
+
+# Benchmark options
+parser.add_argument("--cmd", type=str, required=True, help="Path to benchmark binary")
+parser.add_argument("--options", type=str, default="", help="Args for benchmark binary")
+
+# CPU options
+parser.add_argument("--cpu", type=str, default="O3", choices=["O3", "TIMING", "ATOMIC"])
+parser.add_argument("--freq", type=str, default="2GHz", help="CPU frequency")
+
+# OoO CPU parameters
+parser.add_argument("--rob_size", type=int, default=192, help="Reorder Buffer size")
+parser.add_argument("--issue_width", type=int, default=8, help="Issue width")
+parser.add_argument("--commit_width", type=int, default=8, help="Commit width")
+parser.add_argument("--fetch_width", type=int, default=8, help="Fetch width")
+parser.add_argument("--decode_width", type=int, default=8, help="Decode width")
+
+# Branch Predictor options
+parser.add_argument("--bp_type", type=str, default="TournamentBP", 
+                    choices=["LocalBP", "TournamentBP", "BiModeBP", "LTAGE"],
+                    help="Branch predictor type")
+
+# Memory Dependence Speculation
+parser.add_argument("--mem_dep_pred", type=str, default="true", 
+                    choices=["true", "false"],
+                    help="Enable/disable memory dependence predictor")
+
+# Cache options
+parser.add_argument("--l1i_size", type=str, default="32kB")
+parser.add_argument("--l1i_assoc", type=int, default=4)
+parser.add_argument("--l1d_size", type=str, default="32kB")
+parser.add_argument("--l1d_assoc", type=int, default=4)
+parser.add_argument("--l2_size", type=str, default="1MB")
+parser.add_argument("--l2_assoc", type=int, default=8)
+
+# Cache replacement policy
+parser.add_argument("--l1_repl_policy", type=str, default="LRU",
+                    choices=["LRU", "Random", "FIFO"],
+                    help="L1 cache replacement policy")
+parser.add_argument("--l2_repl_policy", type=str, default="LRU",
+                    choices=["LRU", "Random", "FIFO"],
+                    help="L2 cache replacement policy")
+
+# Prefetcher options
+parser.add_argument("--l1_prefetcher", type=str, default="none",
+                    choices=["none", "stride", "tagged"],
+                    help="L1 prefetcher type")
+parser.add_argument("--l2_prefetcher", type=str, default="none",
+                    choices=["none", "stride", "tagged"],
+                    help="L2 prefetcher type")
+
+# Output directory for stats
+parser.add_argument("--output_dir", type=str, default="m5out", 
+                    help="Output directory for gem5 stats")
+
+args = parser.parse_args()
+
+# ========================================================================
+# CRITICAL: Set output directory BEFORE importing gem5 components
+# ========================================================================
+output_path = Path(args.output_dir).resolve()
+output_path.mkdir(parents=True, exist_ok=True)
+m5.options.outdir = str(output_path)
+
+print("="*80)
+print(f"Output will be saved to: {output_path}")
+print("="*80)
+
+# Now import gem5 components AFTER output directory is set
+from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.processors.simple_processor import SimpleProcessor
+from gem5.components.processors.cpu_types import CPUTypes
+from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
+    PrivateL1SharedL2CacheHierarchy,
+)
+from gem5.components.memory.single_channel import SingleChannelDDR3_1600
+from gem5.isas import ISA
+from gem5.resources.resource import BinaryResource
+from gem5.simulate.simulator import Simulator
+
+# -------------------------------
+# Processor
+# -------------------------------
+cpu_map = {
+    "O3": CPUTypes.O3,
+    "TIMING": CPUTypes.TIMING,
+    "ATOMIC": CPUTypes.ATOMIC,
+}
+
+processor = SimpleProcessor(cpu_type=cpu_map[args.cpu], isa=ISA.X86, num_cores=1)
+
+# -------------------------------
+# Configure O3CPU parameters
+# -------------------------------
+if args.cpu == "O3":
+    for core in processor.get_cores():
+        # Set pipeline widths
+        core.core.fetchWidth = args.fetch_width
+        core.core.decodeWidth = args.decode_width
+        core.core.issueWidth = args.issue_width
+        core.core.commitWidth = args.commit_width
+        
+        # Set ROB size
+        core.core.numROBEntries = args.rob_size
+        
+        # Configure branch predictor using m5.objects
+        print(f"Configuring Branch Predictor: {args.bp_type}")
+        if args.bp_type == "LocalBP":
+            core.core.branchPred = LocalBP()
+        elif args.bp_type == "TournamentBP":
+            core.core.branchPred = TournamentBP()
+        elif args.bp_type == "BiModeBP":
+            core.core.branchPred = BiModeBP()
+        elif args.bp_type == "LTAGE":
+            core.core.branchPred = LTAGE()
+        
+        # Memory dependence speculation
+        # TSO (Total Store Order) disables speculative loads
+        mem_dep_bool = args.mem_dep_pred.lower() == "true"
+        core.core.needsTSO = not mem_dep_bool
+        print(f"Memory Dependence Speculation: {mem_dep_bool}")
+        
+        # Additional O3 tuning options
+        # Store Set Predictor for memory dependence
+        if hasattr(core.core, 'store_set_clear_period'):
+            core.core.store_set_clear_period = 250000 if mem_dep_bool else 0
+
+# -------------------------------
+# Cache hierarchy
+# -------------------------------
+cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
+    l1i_size=args.l1i_size,
+    l1i_assoc=args.l1i_assoc,
+    l1d_size=args.l1d_size,
+    l1d_assoc=args.l1d_assoc,
+    l2_size=args.l2_size,
+    l2_assoc=args.l2_assoc,
+)
+
+# -------------------------------
+# Configure cache replacement policies and prefetchers
+# -------------------------------
+def configure_cache_policies(board):
+    """Configure replacement policies and prefetchers after board is created"""
+    try:
+        # Configure prefetchers if requested
+        if args.l1_prefetcher != "none":
+            print(f"L1 Prefetcher: {args.l1_prefetcher}")
+        if args.l2_prefetcher != "none":
+            print(f"L2 Prefetcher: {args.l2_prefetcher}")
+            
+    except Exception as e:
+        print(f"Warning: Could not configure advanced cache features: {e}")
+
+# -------------------------------
+# Memory
+# -------------------------------
+memory = SingleChannelDDR3_1600(size="512MiB")
+
+# -------------------------------
+# Board
+# -------------------------------
+board = SimpleBoard(
+    clk_freq=args.freq,
+    processor=processor,
+    memory=memory,
+    cache_hierarchy=cache_hierarchy,
+)
+
+# Try to configure cache policies
+configure_cache_policies(board)
+
+# -------------------------------
+# Workload - Path handling
+# -------------------------------
+cmd_path = Path(args.cmd)
+if not cmd_path.is_absolute():
+    cmd_path = Path.cwd() / cmd_path
+
+if not cmd_path.exists():
+    print(f"Error: Binary not found at: {cmd_path}")
+    print(f"Current working directory: {Path.cwd()}")
+    print(f"Tried absolute path: {cmd_path.resolve()}")
+    sys.exit(1)
+
+print(f"Using binary: {cmd_path.resolve()}")
+
+binary_resource = BinaryResource(local_path=str(cmd_path.resolve()))
+board.set_se_binary_workload(
+    binary_resource, 
+    arguments=args.options.split() if args.options else []
+)
+
+# -------------------------------
+# Print Configuration Summary
+# -------------------------------
+print("="*80)
+print("gem5 Simulation Configuration")
+print("="*80)
+print(f"Benchmark: {args.cmd} {args.options}")
+print(f"Output Directory: {output_path}")
+print("-"*80)
+print(f"CPU Configuration:")
+print(f"  Type: {args.cpu}")
+print(f"  Frequency: {args.freq}")
+if args.cpu == "O3":
+    print(f"  ROB Size: {args.rob_size}")
+    print(f"  Fetch/Decode/Issue/Commit Width: {args.fetch_width}/{args.decode_width}/{args.issue_width}/{args.commit_width}")
+    print(f"  Branch Predictor: {args.bp_type}")
+    print(f"  Memory Dependence Speculation: {args.mem_dep_pred}")
+print("-"*80)
+print(f"Cache Configuration:")
+print(f"  L1I: {args.l1i_size}, {args.l1i_assoc}-way")
+print(f"  L1D: {args.l1d_size}, {args.l1d_assoc}-way")
+print(f"  L2: {args.l2_size}, {args.l2_assoc}-way")
+print(f"  L1 Prefetcher: {args.l1_prefetcher}")
+print(f"  L2 Prefetcher: {args.l2_prefetcher}")
+print("="*80)
+
+# -------------------------------
+# Run Simulation
+# -------------------------------
+simulator = Simulator(board=board)
+print("\nStarting simulation...")
+print("This may take several minutes to hours depending on workload size...")
+print("-"*80)
+
+try:
+    simulator.run()
+    print("-"*80)
+    print("✓ Simulation finished successfully!")
+    print(f"✓ Stats saved to: {output_path}/stats.txt")
+    
+    # Verify stats file was created in correct location
+    stats_file = output_path / "stats.txt"
+    if stats_file.exists():
+        print(f"✓ Verified: stats.txt exists at {stats_file}")
+        
+        # Quick IPC check
+        with open(stats_file, 'r') as f:
+            for line in f:
+                if 'system.processor.cores.core.ipc ' in line:
+                    ipc = line.split()[1]
+                    print(f"✓ IPC: {ipc}")
+                    break
+    else:
+        print(f"✗ Warning: stats.txt not found at expected location: {stats_file}")
+        print(f"   Check if it was created in: {Path.cwd() / 'm5out'}")
+    
+    print("="*80)
+except Exception as e:
+    print(f"\n✗ Simulation failed with error: {e}")
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)

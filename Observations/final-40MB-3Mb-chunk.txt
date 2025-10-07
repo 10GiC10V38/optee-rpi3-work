@@ -1,0 +1,68 @@
+
+
+## Enhanced Performance Analysis Report (Chunked)
+
+### Host Application Stats
+
+| Metric                      | Value              |
+|-----------------------------|--------------------|
+| File Read I/O Time          | 79,894 us          |
+| Total Time                  | 3,651,798 us       |
+| CPU Time                    | 3,645,931 us (99.84%) |
+| Memory Peak                 | 4,436 KB           |
+| Context Switches            | 118 (Voluntary: 0, Involuntary: 118) |
+
+***
+
+### Trusted Application Stats
+
+| Metric                     | Value                           |
+|----------------------------|---------------------------------|
+| IPC Calls                  | 16                              |
+| Peak TEE Stack Usage       | 112 bytes (0.68% of allocated)  |
+| Pure Hash Compute Time     | 3,251,000 us                    |
+| Total TEE Execution Time   | 3,371,000 us                    |
+
+***
+
+### Core Performance Metrics
+
+| Metric                       | Value                         |
+|------------------------------|-------------------------------|
+| Overall Throughput           | 11.18 MiB/s                   |
+| Hash Compute Throughput      | 12.56 MiB/s                   |
+| I/O vs Compute Time Ratio    | 0.02 : 1                      |
+| Overhead per IPC Call        | 20,056.5 us (20.06 ms)        |
+
+#### IPC Latency Breakdown
+- **Overhead per IPC Call:** 20,056.5 us (total system overhead / IPC count)
+- **Baseline Round-trip IPC Latency:** 6,600 us (6.6 ms)
+- **Software Overhead per IPC Call:**  
+  $$ 20,056.5\,\mu s - 6,600\,\mu s = 13,456.5\,\mu s $$ (13.46 ms)  
+  *(Represents all remaining non-communication time per call)*
+
+
+
+### In-Depth Overhead Analysis
+
+| Component                      | Value                        |
+|---------------------------------|------------------------------|
+| Total System Overhead           | 320,904 us (8.79% of Total)  |
+| Host-side Overhead              | 200,904 us                   |
+| TEE-side Overhead               | 120,000 us                   |
+| Baseline IPC Latency            | 6,600 us (6.6 ms)            |
+| Software Overhead (per IPC call)| 13,456.5 us (13.46 ms)       |
+
+
+### IPC Latency Micro-benchmark
+
+| Metric                          | Value                        |
+|----------------------------------|------------------------------|
+| Total time for 100 calls         | 663,491 us                   |
+| Average round-trip IPC latency   | 6,634.91 us (6.63 ms)        |
+
+
+
+
+
+

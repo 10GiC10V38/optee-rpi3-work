@@ -1,0 +1,30 @@
+# optee_example_secure_hash testdata4.2Mb.json 
+Secure Hash CompD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+utation with EnhD/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+anced PeD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+rformance MonitoD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+ring
+==D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+========D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+==================================================
+Single-shot limit: 4MB, Chunk size: 1024 KB
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40080000
+D/TA:  TA_CreateEntryPoint:458 Secure Hash TA: Creating entry point with enhanced monitoring
+I/TA: TA initialized with stack base at: 0x400186c0
+
+Processing file: testdata4.2Mb.json
+----------------------------------------
+File size: 4188896 bytes
+Using single-shot hashing for small file
+Failed to compute hash: 0xffff000c (origin: 0x1)D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+
+FailedD/TC:? 0 tee_ta_close_session:529 Destroy session
+ to hashD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+ file: testdata4.2Mb.json
+
+Secure hash computation completed.
+# 
+

@@ -1,0 +1,5 @@
+ts ---
+Total time for 100 calls: 663242 us
+Average round-trip IPC latency: 6632.42 us (6.6324 ms)
+# 
+

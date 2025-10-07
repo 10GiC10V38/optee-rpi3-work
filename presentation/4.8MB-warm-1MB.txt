@@ -1,0 +1,30 @@
+2cf1f7422836a593adade64199b906396a3d596207722f67719bdcb864a
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Chunked) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 11979 us
+Total Time: 454156 us
+Memory Peak: 2368 KB
+Context Switches: 13 (Voluntary: 0, Involuntary: 13)
+
+--- Trusted Application Stats ---
+IPC Calls: 7
+Peak TEE Stack Usage: 112 bytes (0.68% of total allocated)
+Pure Hash Compute Time: 365000 us
+Total TEE Execution Time: 416000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 10.06 MiB/s
+Hash Compute Throughput: 12.51 MiB/s
+I/O vs Compute Time Ratio: 0.03:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 77177 us (16.99% of Total Time)
+  - Host-side Overhead: 26177 us
+  - TEE-side Overhead: 51000 us
+Baseline Round-trip IPC Latency: 6.60 ms
+
+=== END ENHANCED REPORT ===
+
+

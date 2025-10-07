@@ -1,0 +1,5 @@
+when in uboot ,
+execute the command
+
+>run mmcboot 
+   toload the kernel and then the OS.

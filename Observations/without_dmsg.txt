@@ -1,0 +1,5 @@
+everything is same but just have updated the script with no debug message inside the TA.
+and the round trip time came from 6.6 ms to 0.145 ms.
+
+just a single DMSG, has added 6.5 ms to the overhead.
+but without any debugging message , it is taking only 0.145 ms.

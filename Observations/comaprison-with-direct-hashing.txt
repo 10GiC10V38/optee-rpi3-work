@@ -97,7 +97,7 @@ be3b494b8095a4f6I/TA:   Hash operations: 1
 4a2b95d18c5554bdI/TA:   Peak stack usage: 112 bytes
 588c84190621
 
-
+The hash compute time scales with file size, as expected.
 
 
 we can see that the hash value is same in both cases which confirms same file is being used and same hashing is used.
