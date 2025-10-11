@@ -23,6 +23,7 @@
 #define CMD_HASH_INIT               4  // New command to start a hash operation
 #define CMD_HASH_UPDATE             5  // New command to update with a chunk
 #define CMD_HASH_FINAL              6  // New command to finalize and get the hash
+#define CMD_BENCHMARK_NOOP          7  // New command for baseline overhead
 
 /* File size options (1-4 MB) */
 #define SIZE_1MB    (1 * 1024 * 1024)
@@ -60,6 +61,7 @@ typedef struct {
     uint64_t hash_compute_time;
     uint64_t wait_time_total;
     uint64_t io_read_time_us;
+    uint64_t total_tee_execution_time;
 } performance_stats_t;
 
 static void print_usage(const char *program_name) {
@@ -342,7 +344,7 @@ static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
         return res;
     }
 
-    printf("Hash operation initialized\n");
+ //   printf("Hash operation initialized\n");
 
     /* Step 2: Process file in chunks */
     size_t chunks_processed = 0;
@@ -384,11 +386,11 @@ static TEEC_Result hash_file_chunked(TEEC_Session *sess, const char *filename,
         chunks_processed++;
         
         /* Print progress for large files */
-        if (chunks_processed % 10 == 0 || total_read == file_size) {
-            printf("Processed %zu/%zu bytes (%.1f%%) - %zu chunks\n", 
+   /*     if (chunks_processed % 10 == 0 || total_read == file_size) {
+            printf("Processed %zu/%zutotal_tee_execution_time bytes (%.1f%%) - %zu chunks\n", 
                    total_read, file_size, 
                    (double)total_read / file_size * 100.0, chunks_processed);
-        }
+        } */
     }
 
     fclose(file);
@@ -477,92 +479,121 @@ static TEEC_Result get_ta_performance_stats(TEEC_Session *sess,
 }
 
 static void print_performance_report(performance_stats_t *host_stats,
-                                   performance_stats_t *ta_stats,
-                                   const char *method,
-                                   size_t file_size_bytes) {
+                                     performance_stats_t *ta_stats,
+                                     const char *method,
+                                     size_t file_size_bytes
+                                     ) { 
+    double baseline_ipc_latency_us = 6.6; // Added for the no-op result
+
     printf("\n=== ENHANCED PERFORMANCE ANALYSIS REPORT (%s) ===\n", method);
-    
+
+    // --- Host Application Stats ---
     printf("\n--- Host Application Stats ---\n");
     printf("File Read I/O Time: %lu us\n", host_stats->io_read_time_us);
-    printf("Context Switches: %lu\n", host_stats->context_switches);
-    printf("Voluntary Context Switches: %lu\n", host_stats->voluntary_context_switches);
-    printf("Involuntary Context Switches: %lu\n", host_stats->Involuntary_context_switches);
     printf("Total Time: %lu us\n", host_stats->io_time_us);
-    printf("CPU Time: %lu us (%.2f%%)\n", 
+/*  printf("CPU Time: %lu us (%.2f%%)\n", 
            host_stats->cpu_time_us,
            host_stats->io_time_us > 0 ? 
-           (double)host_stats->cpu_time_us / host_stats->io_time_us * 100.0 : 0.0);
+           (double)host_stats->cpu_time_us / host_stats->io_time_us * 100.0 : 0.0); */
     printf("Memory Peak: %lu KB\n", host_stats->memory_peak_kb);
-    
+    printf("Context Switches: %lu (Voluntary: %lu, Involuntary: %lu)\n",
+           host_stats->context_switches, host_stats->voluntary_context_switches, host_stats->Involuntary_context_switches);
+
+    // --- Trusted Application Stats ---
     printf("\n--- Trusted Application Stats ---\n");
     printf("IPC Calls: %lu\n", ta_stats->ipc_calls);
-    printf("RPC Count: %lu\n", ta_stats->rpc_count);
-    printf("Secure Storage Access: %lu\n", ta_stats->secure_storage_access);
-    printf("TEE Stack Usage: %lu bytes\n", ta_stats->tee_stack_usage);
-    printf("Hash Operations: %lu\n", ta_stats->hash_operations);
-    printf("Hash Compute Time: %lu us\n", ta_stats->hash_compute_time/1000);
-    printf("TEE Time Delta: %lu us\n", 
-           ta_stats->tee_time_end - ta_stats->tee_time_start);
-    printf("REE Time Delta: %lu us\n", 
-           ta_stats->ree_time_end - ta_stats->ree_time_start);
+    const double TOTAL_TA_STACK_SIZE = 16384.0;
+    double stack_utilization_percent = ((double)ta_stats->tee_stack_usage / TOTAL_TA_STACK_SIZE) * 100.0;
+    printf("Peak TEE Stack Usage: %lu bytes (%.2f%% of total allocated)\n", 
+           ta_stats->tee_stack_usage, stack_utilization_percent);
+    printf("Pure Hash Compute Time: %lu us\n", ta_stats->hash_compute_time / 1000);
+    printf("Total TEE Execution Time: %lu us\n", ta_stats->total_tee_execution_time);
+
+    // --- Core Performance Metrics ---
+    printf("\n--- Core Performance Metrics ---\n");
     
-    printf("\n--- Enhanced Performance Metrics ---\n");
-    
-    // File size in MB for calculations
-    double file_size_mb = (double)file_size_bytes / (1024.0 * 1024.0);
-    
-    // Memory efficiency per MB processed
-    if (file_size_mb > 0 && ta_stats->tee_stack_usage > 0) {
-        double memory_efficiency = (double)ta_stats->tee_stack_usage / file_size_mb;
-        printf("Memory Efficiency (Peak TA Memory/Input Size): %.2f bytes per MB processed\n", 
-               memory_efficiency);
-    }
-    
-    // Total overhead calculation
-    uint64_t secure_world_time = ta_stats->tee_time_end - ta_stats->tee_time_start;
+    // Calculate key metrics once to reuse them
+    double file_size_mib = (double)file_size_bytes / (1024.0 * 1024.0);
     uint64_t hash_compute_time_us = ta_stats->hash_compute_time / 1000;
-    uint64_t total_overhead = 0;
-    
-    if (secure_world_time > hash_compute_time_us) {
-        total_overhead = secure_world_time - hash_compute_time_us;
-    }
-    
-    printf("Total Secure World Time: %lu us\n", secure_world_time);
-    printf("Pure Hash Compute Time: %lu us\n", hash_compute_time_us);
-    printf("Total Overhead: %lu us (%.2f%% of secure world time)\n", 
-           total_overhead, 
-           secure_world_time > 0 ? (double)total_overhead / secure_world_time * 100.0 : 0.0);
-    
-    // Latency per IPC call
-    if (ta_stats->ipc_calls > 0) {
-        double ipc_latency = (double)host_stats->io_time_us / ta_stats->ipc_calls;
-        printf("Average Latency per IPC Call: %.2f us\n", ipc_latency);
-    }
-    
-    printf("Average time per hash operation: %.2f us\n", 
-           ta_stats->hash_operations > 0 ? 
-           (double)host_stats->io_time_us / ta_stats->hash_operations : 0.0);
-    
-    printf("CPU Utilization: %.2f%%\n",
-           host_stats->io_time_us > 0 ?
-           (double)host_stats->cpu_time_us / host_stats->io_time_us * 100.0 : 0.0);
-    
-    printf("I/O vs Compute Time Ratio: %.2f:1\n",
-           hash_compute_time_us > 0 ?
-           (double)host_stats->io_read_time_us / hash_compute_time_us : 0.0);
-    
-    // Throughput calculations
+
+    // Throughput Calculations
     if (host_stats->io_time_us > 0) {
-        double throughput_mbps = file_size_mb / ((double)host_stats->io_time_us / 1000000.0);
-        printf("Overall Throughput: %.2f MB/s\n", throughput_mbps);
+        double throughput_mips = file_size_mib / ((double)host_stats->io_time_us / 1000000.0);
+        printf("Overall Throughput: %.2f MiB/s\n", throughput_mips);
     }
-    
     if (hash_compute_time_us > 0) {
-        double hash_throughput = file_size_mb / ((double)hash_compute_time_us / 1000000.0);
-        printf("Hash Compute Throughput: %.2f MB/s\n", hash_throughput);
+        double hash_throughput = file_size_mib / ((double)hash_compute_time_us / 1000000.0);
+        printf("Hash Compute Throughput: %.2f MiB/s\n", hash_throughput);
+    }
+    printf("I/O vs Compute Time Ratio: %.2f:1\n",
+           hash_compute_time_us > 0 ? 
+           (double)host_stats->io_read_time_us / hash_compute_time_us : 0.0);
+
+    // --- In-Depth Overhead Analysis ---
+    printf("\n--- In-Depth Overhead Analysis ---\n");
+
+    // Calculate all overhead components
+    uint64_t total_overhead_us = 0;
+    if (host_stats->io_time_us > (hash_compute_time_us + host_stats->io_read_time_us)) {
+        total_overhead_us = host_stats->io_time_us - hash_compute_time_us - host_stats->io_read_time_us;
     }
     
+    uint64_t tee_time_delta_us = ta_stats->total_tee_execution_time;
+    uint64_t host_side_time_us = host_stats->io_time_us > tee_time_delta_us ? host_stats->io_time_us - tee_time_delta_us : 0;
+    uint64_t host_side_overhead_us = host_side_time_us > host_stats->io_read_time_us ? host_side_time_us - host_stats->io_read_time_us : 0;
+    uint64_t tee_side_overhead_us = tee_time_delta_us > hash_compute_time_us ? tee_time_delta_us - hash_compute_time_us : 0;
+    
+    printf("Total System Overhead: %lu us (%.2f%% of Total Time)\n",
+           total_overhead_us,
+           host_stats->io_time_us > 0 ? (double)total_overhead_us / host_stats->io_time_us * 100.0 : 0.0);
+    printf("  - Host-side Overhead: %lu us\n", host_side_overhead_us);
+    printf("  - TEE-side Overhead: %lu us\n", tee_side_overhead_us);
+    printf("Baseline Round-trip IPC Latency: %.2f ms\n", baseline_ipc_latency_us);
+
     printf("\n=== END ENHANCED REPORT ===\n");
+}
+
+
+static void run_noop_benchmark(TEEC_Session *sess) {
+    TEEC_Operation op;
+    TEEC_Result res;
+    uint32_t err_origin;
+    uint64_t total_time_us = 0;
+    const int iterations = 100; // Running the test many times to get a stable average
+
+    printf("\nRunning NOOP Benchmark...\n");
+    printf("----------------------------------------\n");
+
+    /* 1. Perform one "warm-up" call to handle the first-call penalty */
+    memset(&op, 0, sizeof(op));
+    op.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
+    res = TEEC_InvokeCommand(sess, CMD_BENCHMARK_NOOP, &op, &err_origin);
+    if (res != TEEC_SUCCESS) {
+        fprintf(stderr, "Warm-up call failed: 0x%x\n", res);
+        return;
+    }
+    printf("Warm-up call complete. Starting benchmark for %d iterations...\n", iterations);
+
+    /* 2. Now, loop and measure the subsequent calls */
+    for (int i = 0; i < iterations; i++) {
+        uint64_t start_time = get_time_us(); // Use a simpler timer for this tight loop
+
+        res = TEEC_InvokeCommand(sess, CMD_BENCHMARK_NOOP, &op, &err_origin);
+        
+        uint64_t end_time = get_time_us();
+        total_time_us += (end_time - start_time);
+
+        if (res != TEEC_SUCCESS) {
+            fprintf(stderr, "NOOP Benchmark failed during loop: 0x%x\n", res);
+            return;
+        }
+    }
+
+    /* 3. Calculate and print the average */
+    double avg_time_us = (double)total_time_us / iterations;
+    printf("\n--- NOOP Benchmark Results ---\n");
+    printf("Total time for %d calls: %lu us\n", iterations, total_time_us);
+    printf("Average round-trip IPC latency: %.2f us (%.4f ms)\n", avg_time_us, avg_time_us / 1000.0);
 }
 
 int main(int argc, char *argv[]) {
@@ -577,6 +608,17 @@ int main(int argc, char *argv[]) {
     size_t chunk_size = CHUNK_SIZE_1MB;  /* Default to 1MB */
     int file_start_index = 1;
 
+        /* NEW: Check for benchmark flag */
+    if (argc == 2 && strcmp(argv[1], "--benchmark-noop") == 0) {
+        res = initialize_tee_context(&ctx, &sess);
+        if (res != TEEC_SUCCESS) return 1;
+
+        run_noop_benchmark(&sess);
+
+        cleanup_tee_context(&ctx, &sess);
+        return 0;
+    }
+    
     /* Parse command line options */
     int opt;
     while ((opt = getopt(argc, argv, "s:c:h")) != -1) {

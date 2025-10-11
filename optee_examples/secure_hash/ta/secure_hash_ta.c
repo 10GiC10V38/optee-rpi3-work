@@ -14,6 +14,7 @@
 #define CMD_HASH_INIT               4 // New command to start a hash operation
 #define CMD_HASH_UPDATE             5 // New command to update with a chunk
 #define CMD_HASH_FINAL              6 // New command to finalize and get the hash
+#define CMD_BENCHMARK_NOOP          7 // New command for baseline overhead
 
 /* Performance monitoring structure */
 typedef struct {
@@ -36,6 +37,7 @@ typedef struct {
     uint64_t hash_compute_time;   /* Time spent in actual hash computation */
     uint64_t wait_time_total;     /* Total wait time if any */
     uint64_t io_read_time_us;
+    uint64_t total_tee_execution_time; /* Total time spent in TEE */
 } performance_stats_t;
 
 /* Session Context for Streaming Hash */
@@ -120,9 +122,16 @@ static uint64_t get_ree_time_us(void) {
 /* Enhanced memory usage tracking */
 static void log_memory_checkpoint(const char* operation) {
     update_stack_usage();
-    DMSG("Memory checkpoint [%s]: Stack usage = %lu bytes", 
-         operation, g_perf_stats.tee_stack_usage);
+ //   DMSG("Memory checkpoint [%s]: Stack usage = %lu bytes", 
+ //        operation, g_perf_stats.tee_stack_usage);
 }
+
+/* for testing with basic functionality */
+static TEE_Result benchmark_noop(void) {
+   // g_perf_stats.ipc_calls++; // Still count it as an IPC call
+    return TEE_SUCCESS;
+}
+
 
 /*
  * STREAMING HASH FUNCTIONS
@@ -131,11 +140,11 @@ static void log_memory_checkpoint(const char* operation) {
 /* Function for CMD_HASH_INIT */
 static TEE_Result hash_init(ta_session_context *ctx)
 {
-    log_memory_checkpoint("hash_init_start");
+  //  log_memory_checkpoint("hash_init_start");
     
     if (ctx->is_op_active) {
         TEE_FreeOperation(ctx->hash_op_handle);
-        DMSG("Freed previous operation handle");
+  //      DMSG("Freed previous operation handle");
     }
 
     TEE_Result res = TEE_AllocateOperation(&ctx->hash_op_handle,
@@ -160,9 +169,9 @@ static TEE_Result hash_init(ta_session_context *ctx)
     g_perf_stats.tee_time_start = get_tee_time_us();
     g_perf_stats.ree_time_start = get_ree_time_us();
     
-    log_memory_checkpoint("hash_init_end");
-    DMSG("Stream hash operation initialized. TEE start time: %lu us", 
-         g_perf_stats.tee_time_start);
+ //   log_memory_checkpoint("hash_init_end");
+ //   DMSG("Stream hash operation initialized. TEE start time: %lu us", 
+ //        g_perf_stats.tee_time_start);
     return TEE_SUCCESS;
 }
 
@@ -188,7 +197,7 @@ static TEE_Result hash_update(ta_session_context *ctx, uint32_t param_types,
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    log_memory_checkpoint("hash_update_start");
+  //  log_memory_checkpoint("hash_update_start");
     increment_ipc_count();
     update_session_stack_usage(ctx);
     
@@ -200,8 +209,8 @@ static TEE_Result hash_update(ta_session_context *ctx, uint32_t param_types,
     ctx->total_bytes_processed += chunk_size;
     
     log_memory_checkpoint("hash_update_end");
-    DMSG("Updated stream hash with %u bytes. Total processed: %lu bytes. Update time: %lu ns", 
-         chunk_size, ctx->total_bytes_processed, update_time);
+ //   DMSG("Updated stream hash with %u bytes. Total processed: %lu bytes. Update time: %lu ns", 
+ //        chunk_size, ctx->total_bytes_processed, update_time);
     return TEE_SUCCESS;
 }
 
@@ -226,7 +235,7 @@ static TEE_Result hash_final(ta_session_context *ctx, uint32_t param_types,
     if (hash_output_size < digest_size)
         return TEE_ERROR_SHORT_BUFFER;
 
-    log_memory_checkpoint("hash_final_start");
+ //   log_memory_checkpoint("hash_final_start");
     increment_ipc_count();
     update_session_stack_usage(ctx);
     
@@ -254,16 +263,16 @@ static TEE_Result hash_final(ta_session_context *ctx, uint32_t param_types,
         params[0].memref.size = digest_size;
         increment_storage_access(); // Log for audit trail
         
-        log_memory_checkpoint("hash_final_end");
-        IMSG("Streaming hash computed successfully.");
+ //       log_memory_checkpoint("hash_final_end");
+ //      IMSG("Streaming hash computed successfully.");
         
-        IMSG("Enhanced timing details:");
+  /*      IMSG("Enhanced timing details:");
         IMSG("  Total TEE session time: %lu us", total_session_time);
         IMSG("  Hash finalization time: %lu ns", final_time);
         IMSG("  Total hash compute time: %lu us", g_perf_stats.hash_compute_time/1000);
         IMSG("  Total bytes processed: %lu", ctx->total_bytes_processed);
         IMSG("  Peak stack usage: %lu bytes", g_perf_stats.tee_stack_usage);
-        IMSG("  REE time delta: %lu us", g_perf_stats.ree_time_end - g_perf_stats.ree_time_start);
+        IMSG("  REE time delta: %lu us", g_perf_stats.ree_time_end - g_perf_stats.ree_time_start);  */
     }
 
     return res;
@@ -289,7 +298,7 @@ static TEE_Result compute_secure_hash(uint32_t param_types,
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    log_memory_checkpoint("single_shot_start");
+  //  log_memory_checkpoint("single_shot_start");
 
     /* Record start times */
     g_perf_stats.tee_time_start = get_tee_time_us();
@@ -316,7 +325,7 @@ static TEE_Result compute_secure_hash(uint32_t param_types,
         return TEE_ERROR_SHORT_BUFFER;
     }
 
-    IMSG("Computing single-shot hash for %u bytes", input_size);
+ //   IMSG("Computing single-shot hash for %u bytes", input_size);
 
     log_memory_checkpoint("before_allocation");
 
@@ -329,14 +338,14 @@ static TEE_Result compute_secure_hash(uint32_t param_types,
         return res;
     }
 
-    log_memory_checkpoint("after_allocation");
+ //   log_memory_checkpoint("after_allocation");
 
     /* Perform hash computation */
     uint64_t update_start = get_precise_time_ns();
     TEE_DigestUpdate(op, input_data, input_size);
     uint64_t update_time = get_precise_time_ns() - update_start;
 
-    log_memory_checkpoint("after_update");
+ //   log_memory_checkpoint("after_update");
 
     uint64_t final_start = get_precise_time_ns();
     res = TEE_DigestDoFinal(op, NULL, 0, hash_output, &digest_size);
@@ -363,17 +372,17 @@ static TEE_Result compute_secure_hash(uint32_t param_types,
     update_stack_usage();
     increment_storage_access();
 
-    log_memory_checkpoint("before_cleanup");
+ //   log_memory_checkpoint("before_cleanup");
 
     uint64_t total_secure_time = g_perf_stats.tee_time_end - g_perf_stats.tee_time_start;
     uint64_t pure_hash_time = g_perf_stats.hash_compute_time/1000;
     uint64_t overhead_time = total_secure_time > pure_hash_time ? 
                            total_secure_time - pure_hash_time : 0;
 
-    IMSG("Single-shot hash computed successfully: %u bytes -> %u bytes", 
-         input_size, digest_size);
+ //   IMSG("Single-shot hash computed successfully: %u bytes -> %u bytes", 
+  //       input_size, digest_size);
 
-    IMSG("Enhanced timing breakdown:");
+  /*  IMSG("Enhanced timing breakdown:");
     IMSG("  Allocation time: %lu ns", alloc_time);
     IMSG("  Update time: %lu ns", update_time);
     IMSG("  Finalization time: %lu ns", final_time);
@@ -382,10 +391,10 @@ static TEE_Result compute_secure_hash(uint32_t param_types,
     IMSG("  Overhead time: %lu us (%.2f%%)", overhead_time,
          total_secure_time > 0 ? (double)overhead_time/total_secure_time*100.0 : 0.0);
     IMSG("  Peak memory usage: %lu bytes", g_perf_stats.tee_stack_usage);
-    IMSG("  REE time delta: %lu us", g_perf_stats.ree_time_end - g_perf_stats.ree_time_start);
+    IMSG("  REE time delta: %lu us", g_perf_stats.ree_time_end - g_perf_stats.ree_time_start);  */
 
     TEE_FreeOperation(op);
-    log_memory_checkpoint("single_shot_end");
+  //  log_memory_checkpoint("single_shot_end");
     return TEE_SUCCESS;
 }
 
@@ -416,12 +425,12 @@ static TEE_Result get_performance_stats(uint32_t param_types,
                 sizeof(performance_stats_t));
     params[0].memref.size = sizeof(performance_stats_t);
 
-    IMSG("Performance stats retrieved:");
+/*    IMSG("Performance stats retrieved:");
     IMSG("  IPC calls: %lu", g_perf_stats.ipc_calls);
     IMSG("  RPC count: %lu", g_perf_stats.rpc_count);
     IMSG("  Hash operations: %lu", g_perf_stats.hash_operations);
     IMSG("  Peak stack usage: %lu bytes", g_perf_stats.tee_stack_usage);
-    IMSG("  Total hash compute time: %lu us", g_perf_stats.hash_compute_time/1000);
+    IMSG("  Total hash compute time: %lu us", g_perf_stats.hash_compute_time/1000);  */
 
     return TEE_SUCCESS;
 }
@@ -438,7 +447,7 @@ static TEE_Result reset_performance_counters(uint32_t param_types,
     g_stack_base = 0;
     g_max_stack_usage = 0;
     
-    IMSG("Performance counters reset");
+ //   IMSG("Performance counters reset");
     return TEE_SUCCESS;
 }
 
@@ -446,7 +455,7 @@ static TEE_Result reset_performance_counters(uint32_t param_types,
  * Called when the instance of the TA is created
  */
 TEE_Result TA_CreateEntryPoint(void) {
-    DMSG("Secure Hash TA: Creating entry point with enhanced monitoring");
+//  DMSG("Secure Hash TA: Creating entry point with enhanced monitoring");
     
     /* Initialize performance counters */
     TEE_MemFill(&g_perf_stats, 0, sizeof(performance_stats_t));
@@ -463,9 +472,9 @@ TEE_Result TA_CreateEntryPoint(void) {
  * Called when the instance of the TA is destroyed
  */
 void TA_DestroyEntryPoint(void) {
-    DMSG("Secure Hash TA: Destroying entry point");
+/*    DMSG("Secure Hash TA: Destroying entry point");
     IMSG("Final stats - Max stack usage: %u bytes, Total hash ops: %lu", 
-         g_max_stack_usage, g_perf_stats.hash_operations);
+         g_max_stack_usage, g_perf_stats.hash_operations); */
 }
 
 /*
@@ -479,7 +488,7 @@ TEE_Result TA_OpenSessionEntryPoint(uint32_t param_types,
                                               TEE_PARAM_TYPE_NONE,
                                               TEE_PARAM_TYPE_NONE);
 
-    DMSG("Secure Hash TA: Opening session with enhanced tracking");
+//    DMSG("Secure Hash TA: Opening session with enhanced tracking");
 
     if (param_types != exp_param_types)
         return TEE_ERROR_BAD_PARAMETERS;
@@ -500,9 +509,9 @@ TEE_Result TA_OpenSessionEntryPoint(uint32_t param_types,
     /* Initialize session stack base */
     __asm__ volatile ("mov %0, sp" : "=r" (ctx->session_stack_base));
     
-    IMSG("Secure Hash TA session opened successfully");
-    IMSG("Session context allocated at: %p", ctx);
-    IMSG("Session stack base: 0x%x", ctx->session_stack_base);
+//    IMSG("Secure Hash TA session opened successfully");
+//    IMSG("Session context allocated at: %p", ctx);
+//    IMSG("Session stack base: 0x%x", ctx->session_stack_base);
     return TEE_SUCCESS;
 }
 
@@ -515,19 +524,19 @@ void TA_CloseSessionEntryPoint(void *sess_ctx) {
     if (ctx) {
         uint64_t session_duration = get_tee_time_us() - ctx->session_start_time;
         
-        IMSG("Session closing stats:");
+  /*      IMSG("Session closing stats:");
         IMSG("  Session duration: %lu us", session_duration);
         IMSG("  Total bytes processed: %lu", ctx->total_bytes_processed);
-        IMSG("  Operation active: %s", ctx->is_op_active ? "Yes" : "No");
+        IMSG("  Operation active: %s", ctx->is_op_active ? "Yes" : "No"); */
         
         if (ctx->is_op_active) {
-            DMSG("Cleaning up active hash operation");
+     //       DMSG("Cleaning up active hash operation");
             TEE_FreeOperation(ctx->hash_op_handle);
         }
         TEE_Free(ctx);
     }
 
-    IMSG("Secure Hash TA session closed");
+ //   IMSG("Secure Hash TA session closed");
 }
 
 /*
@@ -538,7 +547,10 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sess_ctx,
                                      uint32_t param_types,
                                      TEE_Param params[4]) {
     ta_session_context *ctx = (ta_session_context *)sess_ctx;
+    TEE_Result res; //
     
+    uint64_t command_start_time = get_tee_time_us();
+
     /* Update stack usage on every command */
     if (ctx) {
         update_session_stack_usage(ctx);
@@ -546,31 +558,51 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sess_ctx,
         update_stack_usage();
     }
 
-    DMSG("Command invoked: %u", cmd_id);
-
     switch (cmd_id) {
     case CMD_HASH_INIT:
-        DMSG("Secure Hash TA: Initializing streaming hash");
-        return hash_init(ctx);
+  //      DMSG("Secure Hash TA: Initializing streaming hash");
+        res = hash_init(ctx); // 2. Assign the result to 'res'
+        break; // 3. Use 'break' to exit the switch
+        
     case CMD_HASH_UPDATE:
-        DMSG("Secure Hash TA: Updating hash with chunk");
-        return hash_update(ctx, param_types, params);
+  //      DMSG("Secure Hash TA: Updating hash with chunk");
+        res = hash_update(ctx, param_types, params);
+        break;
+        
     case CMD_HASH_FINAL:
-        DMSG("Secure Hash TA: Finalizing hash");
-        return hash_final(ctx, param_types, params);
+ //       DMSG("Secure Hash TA: Finalizing hash");
+        res = hash_final(ctx, param_types, params);
+        break;
+        
     case CMD_HASH_FILE_SINGLE_SHOT:
-        DMSG("Secure Hash TA: Computing single-shot hash");
-        return compute_secure_hash(param_types, params);   
+  //    DMSG("Secure Hash TA: Computing single-shot hash");
+        res = compute_secure_hash(param_types, params);
+        break;
+        
     case CMD_GET_PERFORMANCE:
-        DMSG("Secure Hash TA: Getting performance stats");
-        return get_performance_stats(param_types, params);
+  //    DMSG("Secure Hash TA: Getting performance stats");
+        res = get_performance_stats(param_types, params);
+        break;
         
     case CMD_RESET_COUNTERS:
-        DMSG("Secure Hash TA: Resetting performance counters");
-        return reset_performance_counters(param_types, params);
+  //    DMSG("Secure Hash TA: Resetting performance counters");
+        res = reset_performance_counters(param_types, params);
+        break;
+        
+    case CMD_BENCHMARK_NOOP:
+  //    DMSG("Calling basic functionality");
+        res = benchmark_noop();
+        break;
         
     default:
-        EMSG("Command ID 0x%x is not supported", cmd_id);
-        return TEE_ERROR_NOT_SUPPORTED;
+  //      EMSG("Command ID 0x%x is not supported", cmd_id);
+        res = TEE_ERROR_NOT_SUPPORTED;
+        break;
     }
+
+    // 4. This code now runs for every command before exiting
+    uint64_t command_end_time = get_tee_time_us();
+    g_perf_stats.total_tee_execution_time += (command_end_time - command_start_time);
+    
+    return res; // 5. Return the stored result at the very end
 }
