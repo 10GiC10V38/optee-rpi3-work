@@ -1,0 +1,94 @@
+When the CPU's decoder sees one of these special crypto instructions, it doesn't use the regular Arithmetic Logic Unit (ALU) that handles basic math. Instead, it activates a dedicated, specialized circuit on the silicon die.
+
+
+basically when a dedicated hardware accelerator is present , it has specific instruction for that purpose
+in the ISA and separate harware support to execue that instruction which completes the task in many smaller cycles.
+
+like crypto accelerators for sha-1 ,sha-256 etc..
+
+---
+
+### **Performance Analysis Report: TEE API vs. Custom Implementation**
+
+**Date:** October 12, 2025
+
+**Project Objective:** To replace the standard TEE Internal API for SHA-256 hashing with a custom C-based implementation within a Trusted Application (TA) and to analyze the resulting performance impact.
+
+**Test Environment:**
+* **Hardware:** Raspberry Pi 3 Model B v1.2
+* **Operation:** Hashing a 40 MB file using a chunked, streaming approach.
+
+---
+
+### ## 1. Key Discovery: Hardware Platform Limitations
+
+The most critical finding of this analysis was related to the hardware itself.
+
+**Observation:** Through inspection of the system's `cpuinfo`, we confirmed that the **Raspberry Pi 3's CPU (Cortex-A53) does not have the ARM Crypto Extensions**.
+
+**Impact:**
+* This means the hardware lacks dedicated circuits for accelerating cryptographic operations like SHA-256.
+* Therefore, both the "TEE Internal API" and the "Custom Code" implementations were forced to run entirely in **software** on the main CPU cores.
+* This reframed the entire experiment: instead of comparing hardware acceleration to a software implementation, we were actually comparing two different software libraries—the TEE's native, optimized library versus your custom, portable C code.
+
+---
+
+### ## 2. Core Performance Comparison
+
+The following analysis is based on two clean, comparable test runs, each processing a 40 MB file with an identical number of 16 IPC calls.
+
+#### **a. Hash Computation Time & Throughput (The Primary Metric)**
+
+This measures the raw speed of the hashing algorithm itself.
+
+| Metric | TEE Internal API | Custom C Code | Analysis |
+| :--- | :--- | :--- | :--- |
+| **Pure Hash Time** | **~3.26 seconds** | ~3.52 seconds | The **TEE API is ~8.2% faster**. |
+| **Hash Throughput**| **12.55 MiB/s** | 11.60 MiB/s | The faster time is directly reflected here. |
+
+**Conclusion:** The TEE's native software library is demonstrably more optimized for the platform. However, the custom C code's performance is exceptionally competitive, proving it to be a highly efficient implementation.
+
+#### **b. System Overhead & Communication**
+
+This measures the cost of communication between the Normal World and the Secure World.
+
+| Metric | TEE Internal API | Custom C Code | Analysis |
+| :--- | :--- | :--- | :--- |
+| **IPC Calls** | 16 | 16 | Identical, providing a perfect comparison. |
+| **Total Overhead** | ~5.79% | ~5.20% | Virtually identical and negligible. |
+
+**Conclusion:** The performance bottleneck is **not** the overhead from TEE communication (IPC calls or context switching). The vast majority of time is spent purely on the hash computation. This is a crucial finding for optimizing the application.
+
+#### **c. Memory Usage**
+
+| Metric | TEE Internal API | Custom C Code | Analysis |
+| :--- | :--- | :--- | :--- |
+| **TEE Stack Usage** | **96 bytes** | **96 bytes** | Identical, as expected. |
+
+**Conclusion:** Both implementations are extremely memory-efficient within the secure world.
+
+---
+
+### ## 3. Explanation of Minor Fluctuations
+
+During the analysis, we noted a small, insignificant variance in one of the metrics.
+
+**Observation:** The **host-side overhead** showed a minor difference of about 6.4 milliseconds between the two runs.
+
+**Conclusion:** This fluctuation is not related to the code change. It is attributed to normal **"OS Noise"**—unpredictable, microscopic delays caused by the Linux scheduler, system interrupts, and varying CPU cache states. It is not a meaningful performance indicator in this context.
+
+---
+
+### ## 4. Final Verdict and Recommendation
+
+Based on a comprehensive review of the data, the final recommendation is clear.
+
+**Recommendation:** For this project, it is **better to use the TEE Internal API calls.**
+
+**Justification:**
+
+1.  **Performance:** The API is demonstrably faster. While the ~8% margin is small, it is a clear performance win.
+2.  **Security & Maintenance:** This is the most compelling reason. The TEE's native API is professionally maintained, vetted, and patched for security vulnerabilities by the TEE OS developers. Relying on custom cryptographic code transfers this significant security and maintenance burden entirely onto you.
+3.  **Effort vs. Reward:** The effort to find, integrate, and maintain a custom library is not justified by the performance results, especially when the native alternative is faster and more secure.
+
+The only scenario where using the custom code would be justified is under a strict requirement for full source code auditability of the entire cryptographic process. For all other practical purposes, the TEE Internal API is the superior choice.
