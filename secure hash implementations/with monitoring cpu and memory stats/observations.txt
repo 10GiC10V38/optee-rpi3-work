@@ -1,0 +1,35 @@
+the process is mostly using single core.
+it is using it to the max. 
+so the total cpu utilization is around 25% as there are 4 cores.
+ 
+so need to see if we can parallelise any part of the application to see how other cores can be used.
+
+
+when i have tried the first code with 1ms  ,i got cpu usage as 200% at some points.
+because of the way in which we were calculating delta and all that for sampling. which did not get correct values and most of the values were zeroes. 
+also find out more about the exact intervals at which the values in the proc get updated and how it is related to the frequency of the cores. explore in detail what all are present in the proc and proc/self.
+
+
+
+
+The CPU frequency is the speed of the processor hardware, while the kernel tick frequency is a timing mechanism used by the operating system's software. 
+ 
+		
+CPU Frequency:  The physical clock speed of the Central Processing Unit (CPU). It measures how many cycles the processor can execute per second, typically in Gigahertz (GHz).	
+Kernel Tick Frequency:  The rate at which the operating system's kernel receives a periodic interrupt from a hardware timer. It is measured in Hertz (Hz) and typically ranges from 100 Hz to 1000 Hz, with modern kernels using a "tickless" or dynamic approach.
+
+
+
+from the jiffies screenshot,
+
+Jiffies before sleep: ~4297044903
+
+        Jiffies after sleep: ~4297045925
+
+        Time elapsed: You ran sleep 1, which pauses for approximately 1 second.
+
+        Jiffies elapsed: 4297045925 - 4297044903 = 1022
+
+    Conclusion:system counted 1022 jiffies in approximately 1 second. This strongly suggests your kernel's clock tick rate (HZ) is configured to 1000 Hz.
+
+so that means the 1000 ticks per second so per tick = 1ms or 0.001 sec

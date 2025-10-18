@@ -29,4 +29,7 @@ inorder to calculate the exact no.of blocks hashed , like setup time , should i 
 like instead of using API and existing libraries?
 
 
+does optee use a separate core for secure world?
+
+
 
