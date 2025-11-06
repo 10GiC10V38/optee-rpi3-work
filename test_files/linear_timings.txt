@@ -1,0 +1,195 @@
+File size: 2048 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 206fbd995ecc02afa74c0747f09accee1975391a2c73318e7b3c4e941b03f108
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 353 us
+Total Time: 1012 us
+Memory Peak: 1324 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 247 us
+Total TEE Execution Time: 0 us
+
+
+
+File size: 3072 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: cfae1ba533cd16e56d4d05102a958e54ed05d41b20b3baf05b4b1a2293ef498b
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 295 us
+Total Time: 883 us
+Memory Peak: 1336 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 312 us
+
+
+File size: 4096 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 43b5644327a61cc63a8e8371bdc36f3527059e12117b26300f68ebd50ad491b7
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 294 us
+Total Time: 1012 us
+Memory Peak: 1352 KB
+Context Switches: 1 (Voluntary: 0, Involuntary: 1)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 385 us
+
+
+
+
+File size: 5120 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 75c30938c1e55e13720d6a12988e0c940b9bc82872347a4f76ccc7bc0c2133a1
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 396 us
+Total Time: 1030 us
+Memory Peak: 1276 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 456 us
+
+
+File size: 6144 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: c351db56fbf474c6e9e0a24617166a055d5129c623458c95c3e0d26109dc041e
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 386 us
+Total Time: 1118 us
+Memory Peak: 1344 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 601 us
+
+
+
+rocessing file: 7KB
+--------------------------D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+--------D/TC:? 0 tee_ta_close_session:529 Destroy session
+------
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+File size: 7168 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 35d81be9d3828597307040de03ed1f7c4d7600bf28440a9dbac024531677262a
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 365 us
+Total Time: 1209 us
+Memory Peak: 1356 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 675 us
+
+
+
+
+File size: 8192 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: da836ac7a371cfc7789d77d6080d06ba0bba555bacc26ca30328c1331fac166a
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 330 us
+Total Time: 1250 us
+Memory Peak: 1340 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 739 us
+
+
+
+Processing file: 9KB
+--------------------------D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+--------D/TC:? 0 tee_ta_close_session:529 Destroy session
+------
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+File size: 9216 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 9d9ac77dde95c3bf29c644b73bda08f89d3ad7f2c549d90f14238c0de4d585c7
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 385 us
+Total Time: 1372 us
+Memory Peak: 1356 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 806 us
+
+
+Processing file: 10KB
+---------------------------------D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+D/TC:? 0 tee_ta_close_session:529 Destroy session
+
+File siD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+ze: 10240 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: f8745835edf7dd45ba88d045d2b09a3fa8a650c3da153ca177b4b3b33c0d03ab
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 376 us
+Total Time: 1495 us
+Memory Peak: 1316 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 876 us
+
+
+
