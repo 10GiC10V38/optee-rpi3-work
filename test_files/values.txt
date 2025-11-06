@@ -1,0 +1,314 @@
+2KB
+
+File size: 2048 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 206fbd995ecc02afa74c0747f09accee1975391a2c73318e7b3c4e941b03f108
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 307 us
+Total Time: 880 us
+Memory Peak: 1328 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 0 us
+Total TEE Execution Time: 0 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 2.22 MiB/s
+I/O vs Compute Time Ratio: 0.00:1
+
+
+=== END ENHANCED REPORT ===
+
+
+
+
+4KB:
+
+File size: 4096 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 9792cd395a44edb49f2a6aea3000b5683d095204ca7d1e5a79471384f9f37ea5
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 316 us
+Total Time: 1034 us
+Memory Peak: 1344 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 0 us
+Total TEE Execution Time: 1000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 3.78 MiB/s
+I/O vs Compute Time Ratio: 0.00:1
+
+
+=== END ENHANCED REPORT ===
+
+
+
+
+
+8KB:
+
+
+File size: 8192 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 94b3f106ff8f3c32bf941b57e1b977ff05a37f568601cd41fc6fea01f37c749b
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 359 us
+Total Time: 1398 us
+Memory Peak: 1340 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 0 us
+Total TEE Execution Time: 0 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 5.59 MiB/s
+I/O vs Compute Time Ratio: 0.00:1
+
+
+
+=== END ENHANCED REPORT ===
+
+16KB:
+
+
+ze: 16384 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: ece7218f0e0d9570b62344ea99b32ff5ea1dc715ba9bde241ffb5c9fb1a90bdd
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 421 us
+Total Time: 2061 us
+Memory Peak: 1360 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 2000 us
+Total TEE Execution Time: 2000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 7.58 MiB/s
+Hash Compute Throughput: 7.81 MiB/s
+I/O vs Compute Time Ratio: 0.21:1
+
+=== END ENHANCED REPORT ===
+
+
+32KB:
+
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 6cfe039a45468626c1d7ec293d1e53bef436df729d27b099d5d0a64585d13c71
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 519 us
+Total Time: 3358 us
+Memory Peak: 1328 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 3000 us
+Total TEE Execution Time: 3000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 9.31 MiB/s
+Hash Compute Throughput: 10.42 MiB/s
+I/O vs Compute Time Ratio: 0.17:1
+
+
+
+=== END ENHANCED REPORT ===
+
+64KB:
+
+
+File size: 65536 bytes
+Using single-shD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+ot hashiD/TC:? 0 tee_ta_close_session:529 Destroy session
+ng for sD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+mall file
+Single-shot hash computed successfully (32 bytes)
+Hash: 341fa96520029a60530286844aff5b513caaf455892959c9ab1afeaa5a91153b
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 743 us
+Total Time: 6044 us
+Memory Peak: 1388 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 5000 us
+Total TEE Execution Time: 6000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 10.34 MiB/s
+Hash Compute Throughput: 12.50 MiB/s
+I/O vs Compute Time Ratio: 0.15:1
+
+
+=== END ENHANCED REPORT ===
+
+
+
+128KB:
+
+File size: 131072 bytes
+Using single-shot hashing for small file
+Single-shot hash computeD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+d succesD/TC:? 0 tee_ta_close_session:529 Destroy session
+sfully (D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+32 bytes)
+Hash: bbdea64c5b6f7464350c8abd26057983c43dc30c3f8e2b6fc0a2b563dac27daf
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 1157 us
+Total Time: 11494 us
+Memory Peak: 1468 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 10000 us
+Total TEE Execution Time: 10000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 10.88 MiB/s
+Hash Compute Throughput: 12.50 MiB/s
+I/O vs Compute Time Ratio: 0.12:1
+
+=== END ENHANCED REPORT ===
+
+
+256KB:
+
+File size: 262144 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: 1c44fa97e3c7b716ae25ffe196b177ec44f417bc5b2d61a8a8739a2c2a20d55c
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 1931 us
+Total Time: 22117 us
+Memory Peak: 1608 KB
+Context Switches: 1 (Voluntary: 0, Involuntary: 1)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 20000 us
+Total TEE Execution Time: 21000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 11.30 MiB/s
+Hash Compute Throughput: 12.50 MiB/s
+I/O vs Compute Time Ratio: 0.10:1
+
+=== END ENHANCED REPORT ===
+
+
+512KB:
+
+File size: 524288 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: 03e20e4eba7bfee95cf13ccf0a0bd69159c5bc1e1d06b4675494d6cb445199f8
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 3479 us
+Total Time: 43280 us
+Memory Peak: 1816 KB
+Context Switches: 2 (Voluntary: 0, Involuntary: 2)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 40000 us
+Total TEE Execution Time: 40000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 11.55 MiB/s
+Hash Compute Throughput: 12.50 MiB/s
+I/O vs Compute Time Ratio: 0.09:1
+
+
+=== END ENHANCED REPORT ===
+
+1024KB:
+
+File size: 1048576 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: 37eddd911bd6d441a899543d93b9c48dfa16b22dc9eda92b2ce84b198fdb7024
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 6569 us
+Total Time: 85165 us
+Memory Peak: 2352 KB
+Context Switches: 3 (Voluntary: 0, Involuntary: 3)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 80000 us
+Total TEE Execution Time: 80000 us
+
+
+
+=== END ENHANCED REPORT ===
+
+
+
+

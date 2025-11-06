@@ -1,0 +1,28 @@
+previously used global_api timers which gave onyl millisecond precision.
+
+TEE_GetSystemTime() only has millisecond (ms) precision.
+
+
+Used the ARM Generic Timer.
+
+
+read_timer_ticks(): Reads the raw tick count from the CNTPCT_EL0 register.
+
+read_timer_frequency(): Reads the timer's speed from the CNTFRQ_EL0 register.
+
+ticks_to_ns(): Converts the raw ticks into nanoseconds (ns).
+
+
+File Modified: optee_os/core/arch/arm/kernel/thread.c
+
+
+added a new function named enable_el0_performance_counters
+
+
+It writes to cntkctl_el1 to enable EL0 access to the Generic Timer (CNTPCT_EL0 and CNTFRQ_EL0).
+
+It also writes to pmuserenr_el0 and pmcr_el0 to enable EL0 access to the CPU's cycle counter (PMCCNTR_EL0), which was the other high-precision timer
+
+
+with the above changes we get wallclock time which gives ns precision.
+but it also incldes the time when cpu switches.

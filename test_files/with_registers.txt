@@ -1,0 +1,69 @@
+Secure HD/TC:? 0 tee_ta_init_pseudo_ta_session:296 Lookup pseudo TA eb0ab446-a63c-4ad5-aada-c665de645221
+ash Computation D/TC:? 0 ldelf_load_ldelf:96 ldelf load address 0x40006000
+with EnhD/LD:  ldelf:134 Loading TS eb0ab446-a63c-4ad5-aada-c665de645221
+anced PerformancD/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (early TA)
+e MonitoD/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+ring
+==D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (Secure Storage TA)
+==========================================================
+Single-shot limit: 4MB, Chunk size: 1024 KB
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0xffff0008
+D/TC:? 0 ldelf_syscall_open_bin:142 Lookup user TA ELF eb0ab446-a63c-4ad5-aada-c665de645221 (REE)
+D/TC:? 0 ldelf_syscall_open_bin:146 res=0
+D/LD:  ldelf:168 ELF (eb0ab446-a63c-4ad5-aada-c665de645221) at 0x40015000
+I/TA: TA initialized with stack base at: 0x400516c0
+
+Processing file: 2KB
+--D/TC:3 0 abort_handler:550 [abort] abort in User mode (TA will panic)
+--------E/TC:? 0 
+--------E/TC:? 0 User mode undef-abort at address 0x40015d50
+--------E/TC:? 0  esr 0x6232fb21  ttbr0 0x20000101a2060   ttbr1 0x00000000   cidr 0x0
+--------E/TC:? 0  cpu #3          cpsr 0x60000100
+------
+E/TC:? 0  x0  0000000000000020 x1  0000000040015abc
+File sizE/TC:? 0  x2  0000000000000000 x3  0000000040051730
+e: 2048 E/TC:? 0  x4  0000000040029658 x5  0000000000000000
+bytes
+UE/TC:? 0  x6  ffffffffffffffff x7  0000000040029658
+sing sinE/TC:? 0  x8  000000000000000d x9  0000000000000365
+gle-shotE/TC:? 0  x10 0000000000000000 x11 0000000000000000
+ hashingE/TC:? 0  x12 0000000000000000 x13 0000000040051780
+ for smaE/TC:? 0  x14 0000000000000000 x15 0000000000000000
+E/TC:? 0  x16 000000001010489c x17 0000000000000000
+
+E/TC:? 0  x18 0000000000000000 x19 0000000000000365
+E/TC:? 0  x20 000000004004c5c0 x21 0000000040051730
+E/TC:? 0  x22 0000000040029000 x23 0000000000000001
+E/TC:? 0  x24 0000000005976198 x25 0000000000000000
+E/TC:? 0  x26 0000000000000000 x27 0000000000000000
+E/TC:? 0  x28 0000000000000000 x29 0000000040051660
+E/TC:? 0  x30 0000000040015a94 elr 0000000040015d50
+E/TC:? 0  sp_el0 0000000040051660
+E/LD:  Status of TA eb0ab446-a63c-4ad5-aada-c665de645221
+E/LD:   arch: aarch64
+E/LD:  region  0: va 0x40004000 pa 0x10800000 size 0x002000 flags rw-s (ldelf)
+E/LD:  region  1: va 0x40006000 pa 0x10802000 size 0x008000 flags r-xs (ldelf)
+E/LD:  region  2: va 0x4000e000 pa 0x1080a000 size 0x001000 flags rw-s (ldelf)
+E/LD:  region  3: va 0x4000f000 pa 0x1080b000 size 0x004000 flags rw-s (ldelf)
+E/LD:  region  4: va 0x40013000 pa 0x1080f000 size 0x001000 flags r--s
+E/LD:  region  5: va 0x40015000 pa 0x00001000 size 0x014000 flags r-xs [0]
+E/LD:  region  6: va 0x40029000 pa 0x00015000 size 0x024000 flags rw-s [0]
+E/LD:  region  7: va 0x4004d000 pa 0x10848000 size 0x005000 flags rw-s (stack)
+E/LD:  region  8: va 0x40052000 pa 0x08001000 size 0x002000 flags rw-- (param)
+E/LD:   [0] eb0ab446-a63c-4ad5-aada-c665de645221 @ 0x40015000
+E/LD:  Call stack:
+E/LD:   0x40015d50
+E/LD:   0x4001b15c
+E/LD:   0x40015f8c
+D/TC:? 0 user_ta_enter:176 tee_user_ta_enter: TA panicked with code 0xdeadbeef
+D/TC:? 0 destroy_ta_ctx_from_session:322 Remove references to context (0x1018a9b8)
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x1018a9a0)
+Failed tD/TC:? 0 tee_ta_close_session:510 csess 0x1018aa00 id 1
+o computD/TC:? 0 tee_ta_close_session:529 Destroy session
+e hash: 0xffff3024 (origin: 0x3)
+Failed to hash file: 2KB
+
+
+tried with updated code to get precise time.
+but need to change the permissions for this to work.
+

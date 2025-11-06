@@ -1,0 +1,366 @@
+File size: 2048 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 206fbd995ecc02afa74c0747f09accee1975391a2c73318e7b3c4e941b03f108
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 193 us
+Total Time: 812 us
+Memory Peak: 1344 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 239 us
+Total TEE Execution Time: 0 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 2.41 MiB/s
+Hash Compute Throughput: 8.17 MiB/s
+I/O vs Compute Time Ratio: 0.81:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 380 us (46.80% of Total Time)
+  - Host-side Overhead: 619 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+File size: 4096 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 9792cd395a44edb49f2a6aea3000b5683d095204ca7d1e5a79471384f9f37ea5
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 282 us
+Total Time: 938 us
+Memory Peak: 1336 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 381 us
+Total TEE Execution Time: 0 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 4.16 MiB/s
+Hash Compute Throughput: 10.25 MiB/s
+I/O vs Compute Time Ratio: 0.74:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 275 us (29.32% of Total Time)
+  - Host-side Overhead: 656 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+File size: 8192 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 94b3f106ff8f3c32bf941b57e1b977ff05a37f568601cd41fc6fea01f37c749b
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 287 us
+Total Time: 1288 us
+Memory Peak: 1348 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 734 us
+Total TEE Execution Time: 1000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 6.07 MiB/s
+Hash Compute Throughput: 10.64 MiB/s
+I/O vs Compute Time Ratio: 0.39:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 267 us (20.73% of Total Time)
+  - Host-side Overhead: 1 us
+  - TEE-side Overhead: 266 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+ze: 16384 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: ece7218f0e0d9570b62344ea99b32ff5ea1dc715ba9bde241ffb5c9fb1a90bdd
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 311 us
+Total Time: 1951 us
+Memory Peak: 1284 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 1368 us
+Total TEE Execution Time: 2000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 8.01 MiB/s
+Hash Compute Throughput: 11.42 MiB/s
+I/O vs Compute Time Ratio: 0.23:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 272 us (13.94% of Total Time)
+  - Host-side Overhead: 0 us
+  - TEE-side Overhead: 632 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+Processing file: 32KB
+----------------------------------------
+File siD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+ze: 3276D/TC:? 0 tee_ta_close_session:529 Destroy session
+D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+
+Using single-shot hashing for small file
+Single-shot hash computed successfully (32 bytes)
+Hash: 6cfe039a45468626c1d7ec293d1e53bef436df729d27b099d5d0a64585d13c71
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 450 us
+Total Time: 3298 us
+Memory Peak: 1308 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 2631 us
+Total TEE Execution Time: 3000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 9.48 MiB/s
+Hash Compute Throughput: 11.88 MiB/s
+I/O vs Compute Time Ratio: 0.17:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 217 us (6.58% of Total Time)
+  - Host-side Overhead: 0 us
+  - TEE-side Overhead: 369 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+Processing file: 64KB
+----------------------------------------
+File size: 65536 bytes
+Using single-shD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+ot hashiD/TC:? 0 tee_ta_close_session:529 Destroy session
+ng for sD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+mall file
+Single-shot hash computed successfully (32 bytes)
+Hash: 341fa96520029a60530286844aff5b513caaf455892959c9ab1afeaa5a91153b
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 703 us
+Total Time: 5997 us
+Memory Peak: 1404 KB
+Context Switches: 0 (Voluntary: 0, Involuntary: 0)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 5110 us
+Total TEE Execution Time: 5000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 10.42 MiB/s
+Hash Compute Throughput: 12.23 MiB/s
+I/O vs Compute Time Ratio: 0.14:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 184 us (3.07% of Total Time)
+  - Host-side Overhead: 294 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+Processing file: 128KB
+----------------------------------------
+File size: 131072 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: bbdea64c5b6f7464350c8abd26057983c43dc30c3f8e2b6fc0a2b563dac27daf
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 1056 us
+Total Time: 11433 us
+Memory Peak: 1408 KB
+Context Switches: 1 (Voluntary: 0, Involuntary: 1)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 10294 us
+Total TEE Execution Time: 10000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 10.93 MiB/s
+Hash Compute Throughput: 12.14 MiB/s
+I/O vs Compute Time Ratio: 0.10:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 83 us (0.73% of Total Time)
+  - Host-side Overhead: 377 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+Processing file: 256KB
+----------------------------------------
+File size: 262144 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: 1c44fa97e3c7b716ae25ffe196b177ec44f417bc5b2d61a8a8739a2c2a20d55c
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 1994 us
+Total Time: 22169 us
+Memory Peak: 1600 KB
+Context Switches: 1 (Voluntary: 0, Involuntary: 1)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 20326 us
+Total TEE Execution Time: 20000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 11.28 MiB/s
+Hash Compute Throughput: 12.30 MiB/s
+I/O vs Compute Time Ratio: 0.10:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 0 us (0.00% of Total Time)
+  - Host-side Overhead: 175 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+Processing file: 512KB
+----------------------------------------
+File size: 524288 bytes
+Using single-shot hashing for small file
+Single-shot hash computed succesD/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+sfully (D/TC:? 0 tee_ta_close_session:529 Destroy session
+32 bytesD/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+)
+Hash: 03e20e4eba7bfee95cf13ccf0a0bd69159c5bc1e1d06b4675494d6cb445199f8
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 3360 us
+Total Time: 43684 us
+Memory Peak: 1852 KB
+Context Switches: 3 (Voluntary: 0, Involuntary: 3)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 40381 us
+Total TEE Execution Time: 40000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 11.45 MiB/s
+Hash Compute Throughput: 12.38 MiB/s
+I/O vs Compute Time Ratio: 0.08:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 0 us (0.00% of Total Time)
+  - Host-side Overhead: 324 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+
+
+
+
+Processing file: 1024KB
+----------------------------------------
+File size: 1048576 bytes
+Using single-shot hashing for small file
+Single-shot hash computed successfully (D/TC:? 0 tee_ta_close_session:510 csess 0x10189f30 id 1
+32 bytesD/TC:? 0 tee_ta_close_session:529 Destroy session
+)
+Hash:D/TC:? 0 destroy_context:307 Destroy TA ctx (0x10189ed0)
+ 37eddd911bd6d441a899543d93b9c48dfa16b22dc9eda92b2ce84b198fdb7024
+
+=== ENHANCED PERFORMANCE ANALYSIS REPORT (Single-shot) ===
+
+--- Host Application Stats ---
+File Read I/O Time: 6563 us
+Total Time: 85621 us
+Memory Peak: 2344 KB
+Context Switches: 2 (Voluntary: 0, Involuntary: 2)
+
+--- Trusted Application Stats ---
+IPC Calls: 1
+Peak TEE Stack Usage: 96 bytes (0.59% of total allocated)
+Pure Hash Compute Time: 80111 us
+Total TEE Execution Time: 80000 us
+
+--- Core Performance Metrics ---
+Overall Throughput: 11.68 MiB/s
+Hash Compute Throughput: 12.48 MiB/s
+I/O vs Compute Time Ratio: 0.08:1
+
+--- In-Depth Overhead Analysis ---
+Total System Overhead: 0 us (0.00% of Total Time)
+  - Host-side Overhead: 0 us
+  - TEE-side Overhead: 0 us
+Baseline Round-trip IPC Latency: 6.60 us
+
+=== END ENHANCED REPORT ===
+

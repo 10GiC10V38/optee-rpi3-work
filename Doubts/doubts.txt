@@ -32,4 +32,7 @@ like instead of using API and existing libraries?
 does optee use a separate core for secure world?
 
 
+does optee write to the same proc file as the linux kernel writes to?
+
+
 
