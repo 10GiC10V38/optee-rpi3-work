@@ -1,0 +1,239 @@
+
+10Bytes
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    67.55 us
+  Pure Algo Time:    65.78 us (SHA256 Only)
+  TEE Overhead:      1.77 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+1Byte
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    69.11 us
+  Pure Algo Time:    67.60 us (SHA256 Only)
+  TEE Overhead:      1.51 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+  
+20Bytes
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    70.00 us
+  Pure Algo Time:    68.39 us (SHA256 Only)
+  TEE Overhead:      1.61 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+100Bytes
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    72.66 us
+  Pure Algo Time:    70.99 us (SHA256 Only)
+  TEE Overhead:      1.67 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+865Bytes
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    167.08 us
+  Pure Algo Time:    165.47 us (SHA256 Only)
+  TEE Overhead:      1.61 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+  
+  2KB
+  [TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    251.67 us
+  Pure Algo Time:    250.05 us (SHA256 Only)
+  TEE Overhead:      1.61 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+3KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    320.73 us
+  Pure Algo Time:    319.06 us (SHA256 Only)
+  TEE Overhead:      1.67 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+4KB:
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    394.17 us
+  Pure Algo Time:    392.29 us (SHA256 Only)
+  TEE Overhead:      1.88 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+5KB
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    423.54 us
+  Pure Algo Time:    421.98 us (SHA256 Only)
+  TEE Overhead:      1.56 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+7KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    638.49 us
+  Pure Algo Time:    636.93 us (SHA256 Only)
+  TEE Overhead:      1.56 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+8KB
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    712.76 us
+  Pure Algo Time:    711.04 us (SHA256 Only)
+  TEE Overhead:      1.72 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+=============================
+
+6KB:
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    568.96 us
+  Pure Algo Time:    567.45 us (SHA256 Only)
+  TEE Overhead:      1.51 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+9KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    750.26 us
+  Pure Algo Time:    748.59 us (SHA256 Only)
+  TEE Overhead:      1.67 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+10KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    849.90 us
+  Pure Algo Time:    848.23 us (SHA256 Only)
+  TEE Overhead:      1.67 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+16KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    1311.04 us
+  Pure Algo Time:    1309.48 us (SHA256 Only)
+  TEE Overhead:      1.56 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+64KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    5088.07 us
+  Pure Algo Time:    5086.04 us (SHA256 Only)
+  TEE Overhead:      2.03 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+  
+128KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    10068.18 us
+  Pure Algo Time:    10066.56 us (SHA256 Only)
+  TEE Overhead:      1.61 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+256KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    20076.88 us
+  Pure Algo Time:    20074.84 us (SHA256 Only)
+  TEE Overhead:      2.03 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+  
+  512KB
+  
+  [TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    39985.89 us
+  Pure Algo Time:    39983.65 us (SHA256 Only)
+  TEE Overhead:      2.24 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+1024KB
+
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    79957.45 us
+  Pure Algo Time:    79955.05 us (SHA256 Only)
+  TEE Overhead:      2.40 us (Ctx Switch + Framework)
+  CPU Cycles:        1999800
+  Peak Stack Usage:  64 bytes
+
+
+52.4MB
+[TEE SIDE - Hardware Counters]
+  Frequency:         19200000 Hz
+  Total TEE Time:    3983317.55 us
+  Pure Algo Time:    3983242.14 us (SHA256 Only)
+  TEE Overhead:      75.42 us (Ctx Switch + Framework)
+  CPU Cycles:        52994700
+  Peak Stack Usage:  64 bytes
+
+
+
+
+
+File Size,Total TEE Time (µs),Pure Algo Time (µs),TEE Overhead (µs)
+1 Byte,69.11,67.60,1.51
+10 Bytes,67.55,65.78,1.77
+20 Bytes,70.00,68.39,1.61
+100 Bytes,72.66,70.99,1.67
+865 Bytes,167.08,165.47,1.61
+2 KB,251.67,250.05,1.61
+3 KB,320.73,319.06,1.67
+4 KB,394.17,392.29,1.88
+5 KB,423.54,421.98,1.56
+6 KB,568.96,567.45,1.51
+7 KB,638.49,636.93,1.56
+8 KB,712.76,711.04,1.72
+9 KB,750.26,748.59,1.67
+10 KB,849.90,848.23,1.67
+16 KB,1311.04,1309.48,1.56
+64 KB,5088.07,5086.04,2.03
+128 KB,10068.18,10066.56,1.61
+256 KB,20076.88,20074.84,2.03
+512 KB,39985.89,39983.65,2.24
+1024 KB,79957.45,79955.05,2.40
+52.4 MB,"3,983,317.55","3,983,242.14",75.42
+

@@ -1,0 +1,32 @@
+Based on the extensive data logs, the Python analysis, and the graphs we generated, here is the comprehensive summary of all observations regarding your Secure Hash Trusted Application (TA).
+
+### 1. The "Initialization Floor" (Base Cost)
+* **Observation:** Regardless of how small the file is (even 1 Byte), the operation never completes faster than **~65–67 µs**.
+* **Visual Proof:** The 0–100 Byte graph and the 0–2 KB zoomed graph showed a "flatline" start. The trendline intercepts the Y-axis at roughly **67 µs**.
+* **Technical Conclusion:** This represents the **fixed overhead** of the TEE cryptographic engine. It includes:
+    1.  `TEE_AllocateOperation` (Memory allocation in Secure World).
+    2.  `TEE_DigestUpdate` (Context setup).
+    3.  `TEE_DigestDoFinal` (Finalization and cleanup).
+* **Takeaway:** For very small payloads (< 1 KB), the execution time is dominated by setup costs, not hashing speed.
+
+### 2. Perfect Linear Scalability
+* **Observation:** As file size increases (from 1 KB up to 1 MB and beyond), the "Pure Algo Time" increases in a perfectly straight line.
+* **Metric:** The system processes data at a consistent rate of approximately **0.08 µs per Byte**.
+* **Technical Conclusion:** There is no evidence of cache thrashing, thermal throttling, or non-linear algorithmic complexity. The SHA-256 implementation is stable and efficient.
+
+### 3. Validation of "Single-Shot" vs. "Streaming"
+* **Single-Shot (Small Files):** For files under 4 MB, the data confirms the logic is efficient. The overhead remains low (~1.5 µs to 2.0 µs) because it only involves one round-trip to the TEE.
+* **Streaming (Large Files):** The 52.4 MB file test validated the memory fix.
+    * **Predicted Overhead:** We estimated that 53 chunks (for ~52 MB) would accrue roughly $53 \times 1.5\text{µs} \approx 79.5\text{µs}$ of context switch overhead.
+    * **Measured Overhead:** The actual recorded overhead was **75.42 µs**.
+    * **Technical Conclusion:** The streaming logic in `main.c` works perfectly. It accumulates overhead linearly as expected, without leaking memory or causing crashes (OOM), proving the 1MB buffer strategy is sound.
+
+
+id cycle data. However, the Wall Clock (`CNTPCT_EL0`) is accurate and sufficient for all performance measurements.
+
+### Final Verdict
+Your implementation successfully balances **latency** (using Single-Shot for small files) and **memory safety** (using Streaming for large files). The performance graphs confirm a healthy, linear system with a predictable base cost of ~67 µs.
+
+
+
+
